@@ -358,6 +358,16 @@ class EmployeeCatalog extends UserCatalog
         $employeeCollection = $this->getByCriteria($criteria);
         return $employeeCollection;
     }
+    
+    /**
+     *
+     */
+    public function getIdsByDepartment($idDepartment)
+    {
+        $criteria = new Criteria();
+        $criteria->add(Employee::ID_DEPARTMENT, $idDepartment, Criteria::EQUAL);
+        return $this->getIdsByCriteria($criteria);
+    }
 
     /**
      * Link a Employee to Project

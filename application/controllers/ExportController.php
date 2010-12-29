@@ -234,30 +234,95 @@ class ExportController extends Zend_Controller_Action
        	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
        	$this->noRender();	
     }
-	
+    
+    public function generateAction()
+    {
+	$this->view;
+    }
     public function missingAction()
     {
 	require_once 'excel/ExcelExt.php';
     	
-    	$export = array();
-    	//$timetables = TimetableCatalog::getInstance()->getTimeTablesByDate($startDate,$endDate);
-    	//if (empty($timetables))
-    	//{
-    		$idEmployees = EmployeeCatalog::getInstance()->retrieveAllIds();
-		print_r($idEmployees);
+	$date = $this->getRequest()->getParam('date');
+	$idEmp = $this->getRequest()->getParam('idEmp');
+	$idDepartment = $this->getRequest()->getParam('idDept');
+	$export = array();
+	
+    	if (!$date)
+    	{
+    		$startWeek = mktime();
+		$endWeek = mktime();
+		while(date("w",$startWeek)!=1)
+		{
+			$startWeek -= 3600;
+		}
+		while(date("w",$endWeek)!=0)
+		{
+			$endWeek += 3600;
+		}
+		$startDate = date("Y-m-d",$startWeek);
+		$endDate = date("Y-m-d",$endWeek);
+    	}
+    	else
+    	{
+	    	$startDate = date('Y-m-d', strtotime('last Monday', strtotime($date)));
+		$endDate = date('Y-m-d', strtotime('next Sunday', strtotime($date)));
+    	}
+	$timetables = TimetableCatalog::getInstance()->getTimeTablesByDate($startDate, $endDate);
+	
+	if($idEmp)
+	{
+		$timetablesByEmp = TimeTableCatalog::getInstance()->getByIdEmployee($idEmp)->toarray();
+		$timetablesByEmp = array_intersect($timetables, $timetablesByEmp);
+		if(empty($timetablesByEmp))
+		{
+			$employee = EmployeeCatalog::getInstance()->getById($idEmp);
+			$username = $employee->getUsername();	
+			$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
+			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
+			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
+			$departmentEmployee = $department->getDepartmentCode();
+			$export[] = array(
+				'Nro. Empleado' => $username,
+				'Nombre del Empleado' => $nameEmployee,
+				'Departamento' => $departmentEmployee
+			);
+		}
+		else
+		{
+			print("Employee has submitted task for that period");
+			die();
+		}
+	}
+	else
+	{
+		$idEmployeesByDept = $idDepartment ?
+			EmployeeCatalog::getInstance()->getIdsByDepartment($idDepartment) :
+			EmployeeCatalog::getInstance()->retrieveAllIds();
+		if (!empty($timetables))
+			foreach($timetables as $timetable)
+				$submitedEmployees[] = $timetable['id_employee'];
+		else
+			$submitedEmployees = EmployeeCatalog::getInstance()->retrieveAllIds();
+			
+		$idEmployees = array_intersect($idEmployeesByDept, $submitedEmployees);
+		
 		foreach ($idEmployees as $idEmployee)
 		{
-			/***Employee information***/			
+			//Employee information
 			$employee = EmployeeCatalog::getInstance()->getById($idEmployee);
 			$username = $employee->getUsername();	
 			$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
 			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
+			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
+			$departmentEmployee = $department->getDepartmentCode();
 			$export[] = array(
 				'Nro. Empleado' => $username,
 				'Nombre del Empleado' => $nameEmployee,
+				'Departamento' => $departmentEmployee
 			);
-		}
-    	//}
+		}	
+	}
     	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
        	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
        	$this->noRender();
