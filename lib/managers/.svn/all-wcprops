@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/srp/!svn/ver/65/trunk/lib/managers
+END
+ManagerException.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/srp/!svn/ver/1/trunk/lib/managers/ManagerException.php
+END
+UserManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/srp/!svn/ver/1/trunk/lib/managers/UserManager.php
+END
+EmployeeManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/srp/!svn/ver/60/trunk/lib/managers/EmployeeManager.php
+END
+DepartmentManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/srp/!svn/ver/60/trunk/lib/managers/DepartmentManager.php
+END
+ProjectManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/srp/!svn/ver/24/trunk/lib/managers/ProjectManager.php
+END
+TimetableManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/srp/!svn/ver/60/trunk/lib/managers/TimetableManager.php
+END
+CalendarDayManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/srp/!svn/ver/65/trunk/lib/managers/CalendarDayManager.php
+END
+ProjectTaskManager.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/srp/!svn/ver/60/trunk/lib/managers/ProjectTaskManager.php
+END

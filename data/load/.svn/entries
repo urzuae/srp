@@ -1,0 +1,43 @@
+10
+
+dir
+65
+http://10.0.0.98/svn/srp/trunk/data/load
+http://10.0.0.98/svn/srp
+
+
+
+2010-12-27T21:55:45.809005Z
+60
+arturo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2c622af1-a244-4839-91e9-22ef084dadd8
+
+employee
+dir
+
+department
+dir
+
+department_task
+dir
+
+project
+dir
+
+project_task
+dir
+

@@ -1,0 +1,83 @@
+10
+
+dir
+65
+http://10.0.0.98/svn/srp/trunk
+http://10.0.0.98/svn/srp
+
+
+
+2010-12-27T23:36:15.001325Z
+65
+marlen
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+2c622af1-a244-4839-91e9-22ef084dadd8
+
+excel
+dir
+
+application
+dir
+
+cache
+dir
+
+bootstrap.php
+file
+
+
+
+
+2010-12-27T23:33:50.989753Z
+d4fd3f5d8a38b80196f91461eea13158
+2010-12-14T00:16:41.696129Z
+34
+arturo
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2460
+
+lib
+dir
+
+ProjectModel
+dir
+
+data
+dir
+
+public
+dir
+

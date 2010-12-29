@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/srp/!svn/ver/41/trunk/application/views/calendar-day
+END
+Form.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/srp/!svn/ver/41/trunk/application/views/calendar-day/Form.tpl
+END
+Edit.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/srp/!svn/ver/27/trunk/application/views/calendar-day/Edit.tpl
+END
+_row.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/srp/!svn/ver/33/trunk/application/views/calendar-day/_row.tpl
+END
+List.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/srp/!svn/ver/40/trunk/application/views/calendar-day/List.tpl
+END

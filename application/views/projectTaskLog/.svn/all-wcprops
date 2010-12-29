@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/srp/!svn/ver/5/trunk/application/views/projectTaskLog
+END
+Edit.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/srp/!svn/ver/5/trunk/application/views/projectTaskLog/Edit.tpl
+END
+_row.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/srp/!svn/ver/5/trunk/application/views/projectTaskLog/_row.tpl
+END
+List.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/srp/!svn/ver/5/trunk/application/views/projectTaskLog/List.tpl
+END

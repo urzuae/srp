@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/srp/!svn/ver/1/trunk/application/views/access-role
+END
+Edit.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/srp/!svn/ver/1/trunk/application/views/access-role/Edit.tpl
+END
+_row.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/srp/!svn/ver/1/trunk/application/views/access-role/_row.tpl
+END
+List.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/srp/!svn/ver/1/trunk/application/views/access-role/List.tpl
+END

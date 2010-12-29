@@ -1,0 +1,108 @@
+/* COMMON */
+body,html {
+	height: 100%;
+	margin: 0px auto;
+	overflow: hidden;
+}
+
+body {
+	margin: 0px;
+	text-align: left;
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	background-color: #DEECFD;
+	min-width: 980px;
+}
+
+#header {
+	padding: 1px 15px;
+}
+
+
+
+#header div {
+	float: right;
+	padding: 5px 0px;
+}
+
+#header div a {
+	color: #3764A0;
+	text-decoration: none;
+	border-bottom: 1px dotted #3764A0;
+}
+
+#header img,.navPanel img,.navSelect img {
+	vertical-align: middle;
+	margin: 0px 5px 0px 0px;
+	border: none;
+}
+
+.subHeader {
+    background-image: url('../images/template/outlook/panel-titlebg.gif');
+    background-repeat: repeat-x;
+    border-bottom:1px solid #99BBE8;
+    font-family:"Trebuchet MS","Tahoma",sans-serif;
+    font-size:13px;
+}
+
+
+.subHeader div {
+    padding:4px;
+    white-space:nowrap;
+    color:#15428B;
+    font-family:tahoma,arial,verdana,sans-serif;
+    font-size:11px;
+    font-size-adjust:none;
+    font-stretch:normal;
+    font-style:normal;
+    font-variant:normal;
+    font-weight:bold;
+    line-height:normal;
+}
+
+
+
+.clear {
+	clear: both;
+	float: none;
+	height: 0px;
+}
+
+.title {
+	font-family: Georgia,"Times New Roman",Times,serif;
+	font-size:2em;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	padding: 0px 5px;
+}
+
+
+
+
+
+/* CONTENT */
+.content {
+	width: 100%;
+	margin: 5px 5px 0px 0px;
+	background-color: #ffffff;
+	border: solid 1px #99BBE8;
+	vertical-align: top;
+	float: left;
+}
+
+.contentPanel {
+	padding: 2px 10px;
+	overflow: auto;
+	text-align: left !important;
+	
+}
+
+#footer{
+    margin:auto;
+    text-align:center;
+    color:#A8BBCF;
+    font-size: 9px;
+}
+
+
+

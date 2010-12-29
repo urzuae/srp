@@ -1,0 +1,16 @@
+#tooltip {
+	position: absolute;
+	z-index: 3000;
+	border:	1px solid #15428b;
+	background-color: #D9E7F8;
+	color: #15428b;
+	margin: 5px;
+	padding: 7px;
+	opacity: 0.90;
+	filter: alpha(opacity=70);
+	font-family: Arial, Helvetica, sans-serif;
+}
+#tooltip h3, #tooltip div { 
+	margin: 0; 
+	font-size: 90%;
+}

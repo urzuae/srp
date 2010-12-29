@@ -1,0 +1,52 @@
+10
+
+dir
+65
+http://10.0.0.98/svn/srp/trunk/public/images/template
+http://10.0.0.98/svn/srp
+
+
+
+2010-12-24T18:57:48.707963Z
+55
+marlen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2c622af1-a244-4839-91e9-22ef084dadd8
+
+basic
+dir
+
+plugins
+dir
+
+table
+dir
+
+icons
+dir
+
+outlook
+dir
+
+print
+dir
+
+confirm
+dir
+
+ui
+dir
+

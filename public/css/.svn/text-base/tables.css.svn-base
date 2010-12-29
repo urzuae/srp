@@ -1,0 +1,132 @@
+
+table {
+	border-spacing:1px;
+	background-color:#EAF0F7;
+	color: #510e14;
+	border: #aa0000;
+}
+
+table.wide {
+    width: 99%;
+}
+
+caption {
+	background-color: #F8EAB3;
+	background-image: url('../images/template/outlook/panel-titlebg.gif');
+	background-repeat: repeat-x;
+	border:1px solid #99BBE8;
+	
+	padding:4px;
+	white-space:nowrap;
+	color:#15428B;
+	font-family:tahoma,arial,verdana,sans-serif;
+	font-size:11px;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:bold;
+	line-height:normal;
+}
+
+td.spaced {
+	padding: 2px;	
+}
+
+tbody {
+	border: 1px solid #99BBE8;
+}
+
+td, th {
+	    padding: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+thead th {
+	text-align: center;
+	background:#C2D7EF ;
+	color:#15428B;
+	border: 0px;
+	text-transform: capitalize;
+	font-size: 11px;
+	padding: 4px;
+}
+
+tbody th {
+	background:#D9E7F8;
+	color:#15428B;
+	font-size: 11px;
+}
+
+tbody tr {
+	background-color:#FFF; 
+	text-align:left;
+	}
+tbody tr.odd    {
+    background: #f9f9f9;
+    border-top:1px solid #FFF;
+}
+
+
+
+
+
+tbody th a:link, tbody th a:visited{
+	color:#96D030;
+	background:url(../images/template/table/layout.gif) no-repeat; 
+	padding:3px 0px 0px 18px;
+}
+	
+	
+tbody th a:hover{
+	color:#FF8601;
+}
+
+tbody tr td { 
+	height:15px;
+	background: #FFF;
+	border: 1px solid #FFF;
+}
+
+tbody tr.odd td{ 
+	background: #EAF0F7;
+	border-top:1px solid #FFF;
+}
+
+table td a:link, table td a:visited {
+	color: #1975D7;
+	text-decoration: none;
+}
+
+table td a:hover {
+	color: #50ADEA;
+	text-decoration: none ;
+}
+
+table a[title^="Download"] { 
+	background: url(../images/template/table/down.gif) no-repeat center;
+	padding:20px 0px 0px 15px;
+}
+
+
+
+
+tfoot th, tfoot td {
+	background-color:#E7E7E7; padding:3px;
+	text-align:center; 
+	font-size:20px;  font-style:italic;
+	background-image: url('../images/template/ui/ui-bg_inset-hard_100_f5f8f9_1x100.png');
+	background-repeat: repeat-x;
+  padding-left: auto !important;
+  padding-right: auto !important;
+}
+tbody tr.bannList,tbody tr.bannList td {
+    background-color: #888 !important;
+    color: #DDD !important;
+    border-top:1px solid #FFF;
+}
+
+td {
+	vertical-align: middle !important;
+}

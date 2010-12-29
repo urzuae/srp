@@ -1,0 +1,13 @@
+.ui-datepicker .blocked a { background:url(../images/ui-bg_glass_75_dadada_1x400) 50% 50%;}
+<<<<<<< .mine
+.ui-state-active-noholiday, .ui-widget-content .ui-state-active-holiday, .ui-widget-header .ui-state-active-holiday {background: #0000FF;}
+.ui-jqgrid .ui-pg-table{
+    width: 700px;
+}
+select.editable{margin: 0em; width: 100%; font-size: 10px;}
+input.editable{margin: 0em; width: 17px; font-size: 10px; padding: 0}=======
+.ui-datepicker .approved a { background:url(../images/ui-bg_glass_75_dedede_1x400) 50% 50%;}
+.ui-datepicker .released a { background:url(../images/ui-bg_glass_75_dididi_1x400) 50% 50%;}
+.ui-datepicker .draft a { background:url(../images/ui-bg_glass_75_dododo_1x400) 50% 50%;}
+.ui-datepicker .rejected a { background:url(../images/ui-bg_glass_75_dududu_1x400) 50% 50%;}
+.ui-state-active-noholiday, .ui-widget-content .ui-state-active-holiday, .ui-widget-header .ui-state-active-holiday {background: #0000FF;}>>>>>>> .r56
