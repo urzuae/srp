@@ -36,7 +36,7 @@ require_once "application/models/catalogs/ProjectTaskCatalog.php";
  * @author     <zetta> & <chentepixtol>
  * @version    1.0.0 SVN: $Revision$
  */
-class ExportController extends Zend_Controller_Action
+class ExportController extends BaseController
 {    
  	protected function noRender()
     {
@@ -235,32 +235,66 @@ class ExportController extends Zend_Controller_Action
        	$this->noRender();	
     }
     
+    public function employeesAction()
+    {
+	
+	$data = $this->getRequest()->getParam('data');
+	$json = array();
+	$idEmployees = EmployeeCatalog::getInstance()->getIdsByDepartment($data);
+	foreach ($idEmployees as $idEmployee)
+	{
+		//Employee information
+		$employee = EmployeeCatalog::getInstance()->getById($idEmployee);
+		$username = $employee->getUsername();	
+		$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
+		$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
+		$json[] = array('idEmp' => utf8_encode($username), 'name' => utf8_encode($nameEmployee));
+	}
+	$json = json_encode($json);
+	print_r($json);
+	$this->noRender();
+    }
+    
     public function generateAction()
     {
-	$this->view;
+	$this->view->setTpl('Generate');
+	$idDepartments = DepartmentCatalog::getInstance()->retrieveAllIds();
+	foreach ($idDepartments as $idDept)
+	{
+		$department = DepartmentCatalog::getInstance()->getById($idDept);
+		$departmentName = $department->getDepartmentName();
+		$departments[] = array ('idDept' => $idDept, 'name' => $departmentName);
+	}
+	$this->view->departments = $departments;
     }
     public function missingAction()
     {
 	require_once 'excel/ExcelExt.php';
     	
-	$date = $this->getRequest()->getParam('date');
+	$startDate = $this->getRequest()->getParam('startDate');
+	$endDate = $this->getRequest()->getParam('endDate');
+	
 	$idEmp = $this->getRequest()->getParam('idEmp');
 	$idDepartment = $this->getRequest()->getParam('idDept');
 	$export = array();
 	
-    	if (!$date)
+	print_r($startDate, $endDate);print_r($idEmp, $idDepartment);
+    	if (!$startDate)
     	{
     		$startWeek = mktime();
-		$endWeek = mktime();
 		while(date("w",$startWeek)!=1)
 		{
 			$startWeek -= 3600;
 		}
+		$startDate = date("Y-m-d",$startWeek);
+	}
+	if (!$endDate)
+	{
+		$endWeek = mktime();
 		while(date("w",$endWeek)!=0)
 		{
 			$endWeek += 3600;
 		}
-		$startDate = date("Y-m-d",$startWeek);
 		$endDate = date("Y-m-d",$endWeek);
     	}
     	else
@@ -322,6 +356,11 @@ class ExportController extends Zend_Controller_Action
 				'Departamento' => $departmentEmployee
 			);
 		}	
+	}
+	if(empty($export))
+	{
+		print("No Data found");
+		die();
 	}
     	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
        	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
