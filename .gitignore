@@ -1,4 +1,7 @@
-.svn/
-*/.svn/
-*/*/.snv/
+.svn
+*/.svn
+*/*/.snv
+*/*/*/.svn
+*/*/*/*/.svn
 data/update/*.xls
+cache
