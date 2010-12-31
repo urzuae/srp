@@ -1,14 +1,14 @@
 <h2>Exportar Archivo Baan</h2>
-<br><br>
+<h3 style="text-align:center;">Criterios de Busqueda</h3>
+<br>
 <script type="text/javascript" src="{$baseUrl}/js/modules/export/export.js"></script>
-<form action="{url action=missing}" method="post">
+<form action="{url action=missing}">
 	<table class="center">
-		<caption>{$l10n->_('Criterios de Busqueda')}</caption>
 		<tr>
                     <td>Departamento</td>
                     <td>
                         <select name="idDept" id="idDept">
-                            <option value='0'>Selecciona un Departamento</option>
+                            <option value=''>Selecciona un Departamento</option>
                             {foreach $departments as $department}
                                 <option value={$department.idDept}>{$department.name}</option>
                             {/foreach}
@@ -25,11 +25,11 @@
                 </tr>
                 <tr>
                     <td>{$l10n->_('Inicio')}</td>
-                    <td><input name="startp" type="text" size="12" id="startp" class="datePicker" value="{$startDate}"/></td>
+                    <td><input name="startDate" type="text" size="12" id="startp" class="datePicker" value="{$startDate}"/></td>
                 </tr>
                 <tr>
                     <td>{$l10n->_('Fin')}</td>   
-                    <td><input name="endp" type="text" size="12" id="endp" class="datePicker" value="{$endDate}"/></td>
+                    <td><input name="endDate" type="text" size="12" id="endp" class="datePicker" value="{$endDate}"/></td>
                 </tr>
                 <tr>
     	            <td colspan="4">

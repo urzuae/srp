@@ -14,6 +14,7 @@
 /**
  * Dependences
  */
+
 require_once "lib/controller/CrudController.php";
 require_once "application/models/catalogs/TimetableCatalog.php";
 require_once "application/models/catalogs/TimetableHourCatalog.php";
@@ -257,6 +258,7 @@ class ExportController extends BaseController
     
     public function generateAction()
     {
+	
 	$this->view->setTpl('Generate');
 	$idDepartments = DepartmentCatalog::getInstance()->retrieveAllIds();
 	foreach ($idDepartments as $idDept)
@@ -267,18 +269,18 @@ class ExportController extends BaseController
 	}
 	$this->view->departments = $departments;
     }
+    
+    //Exports to an excel file, employees have not submit planillas
     public function missingAction()
     {
-	require_once 'excel/ExcelExt.php';
-    	
+	//require_once 'PEAR/Spreadsheet/Excel/Writer.php';
+	
 	$startDate = $this->getRequest()->getParam('startDate');
 	$endDate = $this->getRequest()->getParam('endDate');
 	
 	$idEmp = $this->getRequest()->getParam('idEmp');
 	$idDepartment = $this->getRequest()->getParam('idDept');
 	$export = array();
-	
-	print_r($startDate, $endDate);print_r($idEmp, $idDepartment);
     	if (!$startDate)
     	{
     		$startWeek = mktime();
@@ -288,6 +290,8 @@ class ExportController extends BaseController
 		}
 		$startDate = date("Y-m-d",$startWeek);
 	}
+	else
+		$startDate = date('Y-m-d', strtotime($startDate));
 	if (!$endDate)
 	{
 		$endWeek = mktime();
@@ -297,14 +301,18 @@ class ExportController extends BaseController
 		}
 		$endDate = date("Y-m-d",$endWeek);
     	}
-    	else
-    	{
-	    	$startDate = date('Y-m-d', strtotime('last Monday', strtotime($date)));
-		$endDate = date('Y-m-d', strtotime('next Sunday', strtotime($date)));
-    	}
-	$timetables = TimetableCatalog::getInstance()->getTimeTablesByDate($startDate, $endDate);
-	
-	if($idEmp)
+	else
+		$endDate = date('Y-m-d', strtotime($endDate));
+    	
+	/*$workbook = new Spreadsheet_Excel_Writer("Reporte planillas faltantes de ".$startDate." a ".$endDate.".xls");
+	$worksheet = activityConfDatasheetXls($workbook, $startDate, $endDate);
+	$data_format = setFormatReport($workbook);
+	$row = 5;
+	$col = 1;
+	$flag = 1;*/
+
+	$timetables = TimetableCatalog::getInstance()->getTimeTablesGeneralByDate($startDate, $endDate);
+	if(is_numeric($idEmp))
 	{
 		$timetablesByEmp = TimeTableCatalog::getInstance()->getByIdEmployee($idEmp)->toarray();
 		$timetablesByEmp = array_intersect($timetables, $timetablesByEmp);
@@ -316,11 +324,17 @@ class ExportController extends BaseController
 			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
 			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
 			$departmentEmployee = $department->getDepartmentCode();
-			$export[] = array(
-				'Nro. Empleado' => $username,
-				'Nombre del Empleado' => $nameEmployee,
-				'Departamento' => $departmentEmployee
-			);
+			/*$height = 30;
+			$format = NULL;
+			$hidden = FALSE;
+			$level = 0;
+			$worksheet->setRow ( $row, $height, $format, $hidden, $level );
+			$worksheet->write ( $row, $col, "$flag", $data_format ); //consecutivo
+			$worksheet->write ( $row, $col + 1, "$username", $data_format );
+			$worksheet->write ( $row, $col + 2, "$nameEmployee", $data_format );
+			$worksheet->write ( $row, $col + 3, "$departmentEmployee", $data_format );
+			$row++;
+			$flag++;*/
 		}
 		else
 		{
@@ -330,16 +344,14 @@ class ExportController extends BaseController
 	}
 	else
 	{
-		$idEmployeesByDept = $idDepartment ?
+		$idEmployees = is_numeric($idDepartment) ?
 			EmployeeCatalog::getInstance()->getIdsByDepartment($idDepartment) :
 			EmployeeCatalog::getInstance()->retrieveAllIds();
-		if (!empty($timetables))
+		if (!empty($timetables)){
 			foreach($timetables as $timetable)
 				$submitedEmployees[] = $timetable['id_employee'];
-		else
-			$submitedEmployees = EmployeeCatalog::getInstance()->retrieveAllIds();
-			
-		$idEmployees = array_intersect($idEmployeesByDept, $submitedEmployees);
+			$idEmployees = array_diff($idEmployees, $submitedEmployees);
+		}
 		
 		foreach ($idEmployees as $idEmployee)
 		{
@@ -350,20 +362,87 @@ class ExportController extends BaseController
 			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
 			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
 			$departmentEmployee = $department->getDepartmentCode();
-			$export[] = array(
-				'Nro. Empleado' => $username,
-				'Nombre del Empleado' => $nameEmployee,
-				'Departamento' => $departmentEmployee
-			);
+			/*
+			$height = 30;
+			$format = NULL;
+			$hidden = FALSE;
+			$level = 0;
+			$worksheet->setRow ( $row, $height, $format, $hidden, $level );
+			$worksheet->write ( $row, $col, "$flag", $data_format ); //consecutivo
+			$worksheet->write ( $row, $col + 1, "$username", $data_format );
+			$worksheet->write ( $row, $col + 2, "$nameEmployee", $data_format );
+			$worksheet->write ( $row, $col + 3, "$departmentEmployee", $data_format );
+			$row ++;
+			$flag ++;*/
 		}	
 	}
-	if(empty($export))
-	{
-		print("No Data found");
-		die();
-	}
+	/*
+	$workbook->send("Reporte planillas faltantes de $startDate a $endDate.xls");
+	toEndFileReport($workbook);
+	header('Content-Type: application/vnd.ms-excel;' );
+	readfile("Reporte planillas faltantes de $startDate a $endDate.xls");
+	toEndFileReport($workbook);*/
+	
     	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
        	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
        	$this->noRender();
     }
+    
+    //
+    
+    
 }
+    function activityConfDatasheetXls($workbook, $startDate, $endDate)
+    {
+	$worksheet = & $workbook->addWorksheet("Reporte");
+	$worksheet->setLandscape();
+	$worksheet->repeatRows(0, 5);
+	$resourceName = "REPORTE DE PLANILLAS FALTANTES";
+	$period = "PERIODO DEL REPORTE: Del ".$startDate." al ".$endDate;
+	
+	//los merges
+	$worksheet->setMerge ( 0, 1, 0, 4 ); // Nombre del acceso
+	$worksheet->setMerge ( 1, 1, 1, 4 ); // 
+	$worksheet->setMerge ( 2, 1, 2, 4 ); //
+	$worksheet->setMerge ( 3, 1, 3, 4 ); //
+	
+	//el formato
+	$header_format = $workbook->addFormat ( array ('align' => 'left' ) ); // formato para los encabezados
+	$header_format->setBold ();
+	$header_format->setBgColor ( "gray" );
+	$header_format->setColor ( "white" );
+	$titles_format = $workbook->addFormat ( array ('align' => 'center' ) ); // formato para los titulos
+	$titles_format->setSize (11);
+	$titles_format->setBold ();
+	
+	//el ancho de las columnas
+	$worksheet->setColumn ( 1, 1, 8 ); // # consecutivo
+	$worksheet->setColumn ( 2, 2, 15 ); // Numero de Empleado
+	$worksheet->setColumn ( 3, 3, 40 ); // Nombre Empleado
+	$worksheet->setColumn ( 4, 4, 18 ); // Departamento
+	
+	//los textos
+	$worksheet->write ( 0, 1, "BITÁCORA", $header_format );
+	$worksheet->write ( 1, 1, $resourceName, $header_format );
+	$worksheet->write ( 2, 1, $period, $header_format );
+	
+	$worksheet->write ( 4, 1, "#", $titles_format );
+	$worksheet->write ( 4, 2, "ID EMPLEADO", $titles_format );
+	$worksheet->write ( 4, 3, "EMPLEADO", $titles_format );
+	$worksheet->write ( 4, 4, "DEPARTAMENTO", $titles_format );
+	return $worksheet;
+    }
+    
+    function setFormatReport($workbook)
+    {
+	$data_format = $workbook->addFormat(array('align' => 'left', 'VAlign' => 'vcenter'));
+	$data_format->setSize(10);
+	$data_format->setTextWrap();
+	return $data_format;
+    }
+
+    function toEndFileReport($workbook)
+    {
+	$workbook->close();
+	return;
+    }
