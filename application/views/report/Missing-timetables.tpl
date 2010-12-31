@@ -1,4 +1,4 @@
-<h2>Exportar Archivo Baan</h2>
+<h2>Exportar Reportes de Planillas Faltantes</h2>
 <h3 style="text-align:center;">Criterios de Busqueda</h3>
 <br>
 <script type="text/javascript" src="{$baseUrl}/js/modules/export/export.js"></script>

@@ -43,6 +43,7 @@ class ReportController extends Zend_Controller_Action
     
     public function missingAction()
     {
+	require_once 'excel/ExcelExt.php';
 	$params['startDate'] = $this->getRequest()->getParam('startDate');
 	$params['endDate'] = $this->getRequest()->getParam('endDate');
 	$params['idEmp'] = $this->getRequest()->getParam('idEmp');
@@ -57,7 +58,7 @@ class ReportController extends Zend_Controller_Action
 	    die();
 	}
     	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
-       	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
+       	$excel=ExcelExt::createExcel("PlanillasFaltantes".$dateExport.".xls", $export);
        	exit(0);
     }
 

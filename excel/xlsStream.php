@@ -105,6 +105,7 @@ class xlsStream
      */
     function stream_read($byte_count)
     {
+	$data = "";
         if (is_resource($this->fp) && !feof($this->fp))
         {
             $data .= fread($this->fp, $byte_count);
@@ -136,6 +137,7 @@ class xlsStream
      */
     function _xls_stream_write($data)
     {
+	$size="";
         if (is_array($data) && !empty($data))
         {
             $row = 0;

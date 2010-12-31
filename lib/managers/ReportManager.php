@@ -145,7 +145,7 @@ class ReportManager {
 	
 	public function getMissing($params=null)
 	{
-		require_once 'excel/ExcelExt.php';
+		
 		$startDate = $params['startDate'];
 		$endDate = $params['endDate'];
 		$idEmp = $params['idEmp'];
