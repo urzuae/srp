@@ -11,7 +11,7 @@
 <script type="text/javascript" src="{$baseUrl}/js/jquery/jquery.jqGrid.min.js"></script>
 <script type="text/javascript" src="{$baseUrl}/js/jquery/employee-task/calendar-task.js"></script>
 <link rel="stylesheet" href="{$baseUrl}/css/test.css" type="text/css" />
-<link rel="stylesheet" href="{$baseUrl}/css/test.css" type="text/css" />
+<link rel="stylesheet" href="{$baseUrl}/css/ui.jqgrid.css" type="text/css" />
 <h2>{$name}</h2>
 <form action="{url action=list}" method="post">
     <input type="hidden" name="idEmployee" value="{$idEmployee}">
@@ -38,5 +38,7 @@
     </table>
 </form>
 <hr>
-<table id="list"></table>
-<div id="pager"></div> 
+<div class="center">
+	<table id="list"></table>
+	<div id="pager"></div> 
+</div>

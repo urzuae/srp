@@ -78,6 +78,7 @@ class TimetableLogStatusesCatalog extends TimetableLogCatalog
             $data = array(
                 'id_timetable_log' => $timetableLogStatuses->getIdTimetableLog(),
                 'status' => $timetableLogStatuses->getStatus(),
+                'rejected_reason' => $timetableLogStatuses->getRejectedReason(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->insert(TimetableLogStatuses::TABLENAME, $data);
@@ -147,6 +148,7 @@ class TimetableLogStatusesCatalog extends TimetableLogCatalog
             $data = array(
                 'id_timetable_log' => $timetableLogStatuses->getIdTimetableLog(),
                 'status' => $timetableLogStatuses->getStatus(),
+                'rejected_reason' => $timetableLogStatuses->getRejectedReason(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->update(TimetableLogStatuses::TABLENAME, $data, $where);

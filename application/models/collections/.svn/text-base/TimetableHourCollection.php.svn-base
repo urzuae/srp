@@ -32,7 +32,7 @@ class TimetableHourCollection extends ArrayIterator
      * @var Parser
      */
     private $parser;
-    
+
     /**
      * Constructor
      * @param array $array
@@ -64,9 +64,9 @@ class TimetableHourCollection extends ArrayIterator
     }
 
     /**
-     * Return current array entry and 
+     * Return current array entry and
      * move to next entry
-     * @return TimetableHour 
+     * @return TimetableHour
      */
     public function read()
     {
@@ -77,8 +77,8 @@ class TimetableHourCollection extends ArrayIterator
 
     /**
      * Get the first array entry
-     * if exists or null if not 
-     * @return TimetableHour|null 
+     * if exists or null if not
+     * @return TimetableHour|null
      */
     public function getOne()
     {
@@ -89,7 +89,7 @@ class TimetableHourCollection extends ArrayIterator
         } else
             return null;
     }
-    
+
     /**
      * Contains one object with $idTimetableHour
      * @param  int $idTimetableHour
@@ -99,7 +99,7 @@ class TimetableHourCollection extends ArrayIterator
     {
         return parent::offsetExists($idTimetableHour);
     }
-    
+
     /**
      * Remove one object with $idTimetableHour
      * @param  int $idTimetableHour
@@ -109,7 +109,7 @@ class TimetableHourCollection extends ArrayIterator
         if( $this->contains($idTimetableHour) )
             $this->offsetUnset($idTimetableHour);
     }
-    
+
     /**
      * Merge two Collections
      * @param TimetableHourCollection $timetableHourCollection
@@ -126,7 +126,7 @@ class TimetableHourCollection extends ArrayIterator
         }
         $timetableHourCollection->rewind();
     }
-    
+
     /**
      * Diff two Collections
      * @param TimetableHourCollection $timetableHourCollection
@@ -139,11 +139,11 @@ class TimetableHourCollection extends ArrayIterator
         {
             $timetableHour = $timetableHourCollection->read();
             if( $this->contains( $timetableHour->getIdTimetableHour() ) )
-                $this->remove($timetableHour->getIdTimetableHour());     
+                $this->remove($timetableHour->getIdTimetableHour());
         }
         $timetableHourCollection->rewind();
     }
-    
+
     /**
      * Intersect two Collections
      * @param TimetableHourCollection $timetableHourCollection
@@ -162,18 +162,18 @@ class TimetableHourCollection extends ArrayIterator
         $timetableHourCollection->rewind();
         return $newtimetableHourCollection;
     }
-    
+
     /**
-     * Retrieve the array with primary keys 
+     * Retrieve the array with primary keys
      * @return array
      */
     public function getPrimaryKeys()
     {
         return array_keys($this->getArrayCopy());
     }
-    
+
     /**
-     * Retrieve the TimetableHour with primary key  
+     * Retrieve the TimetableHour with primary key
      * @param  int $idTimetableHour
      * @return TimetableHour
      */
@@ -181,7 +181,7 @@ class TimetableHourCollection extends ArrayIterator
     {
         return $this->contains($idTimetableHour) ? $this[$idTimetableHour] : null;
     }
-  
+
     /**
      * Transforma una collection a un array
      * @return array
@@ -198,7 +198,7 @@ class TimetableHourCollection extends ArrayIterator
         $this->rewind();
         return $array;
     }
-    
+
     /**
      * Crea un array asociativo de $key => $value a partir de las constantes de un bean
      * @param string $ckey
@@ -217,7 +217,7 @@ class TimetableHourCollection extends ArrayIterator
         $this->rewind();
         return $array;
     }
-    
+
     /**
      * Retrieve the parser object
      * @return Parser
@@ -226,7 +226,7 @@ class TimetableHourCollection extends ArrayIterator
     {
         return $this->parser;
     }
-    
+
     /**
      * Is Empty
      * @return boolean
@@ -235,7 +235,6 @@ class TimetableHourCollection extends ArrayIterator
     {
         return $this->count() == 0;
     }
-  
-  
-}
 
+
+}

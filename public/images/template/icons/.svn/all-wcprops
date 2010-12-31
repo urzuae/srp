@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 55
-/svn/srp/!svn/ver/55/trunk/public/images/template/icons
+/svn/srp/!svn/ver/74/trunk/public/images/template/icons
 END
 page_white_excel.png
 K 25
@@ -14,6 +14,12 @@ K 25
 svn:wc:ra_dav:version-url
 V 71
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/coins_delete.png
+END
+arrow_up.png
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/srp/!svn/ver/74/trunk/public/images/template/icons/arrow_up.png
 END
 clock_add.png
 K 25
@@ -63,6 +69,12 @@ svn:wc:ra_dav:version-url
 V 66
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/zoom_in.png
 END
+arrow_undo.png
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/srp/!svn/ver/74/trunk/public/images/template/icons/arrow_undo.png
+END
 flag_blue.png
 K 25
 svn:wc:ra_dav:version-url
@@ -75,12 +87,6 @@ svn:wc:ra_dav:version-url
 V 68
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/date_edit.png
 END
-thumb_up.png
-K 25
-svn:wc:ra_dav:version-url
-V 67
-/svn/srp/!svn/ver/1/trunk/public/images/template/icons/thumb_up.png
-END
 printer.png
 K 25
 svn:wc:ra_dav:version-url
@@ -92,6 +98,12 @@ K 25
 svn:wc:ra_dav:version-url
 V 68
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/coins_add.png
+END
+thumb_up.png
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/srp/!svn/ver/1/trunk/public/images/template/icons/thumb_up.png
 END
 money_dollar.png
 K 25
@@ -141,6 +153,12 @@ svn:wc:ra_dav:version-url
 V 69
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/page_excel.png
 END
+link.png
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/srp/!svn/ver/74/trunk/public/images/template/icons/link.png
+END
 vcard.png
 K 25
 svn:wc:ra_dav:version-url
@@ -189,17 +207,17 @@ svn:wc:ra_dav:version-url
 V 68
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/lock_open.png
 END
-coins.png
-K 25
-svn:wc:ra_dav:version-url
-V 64
-/svn/srp/!svn/ver/1/trunk/public/images/template/icons/coins.png
-END
 book_open.png
 K 25
 svn:wc:ra_dav:version-url
 V 68
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/book_open.png
+END
+coins.png
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/srp/!svn/ver/1/trunk/public/images/template/icons/coins.png
 END
 male.png
 K 25
@@ -261,17 +279,17 @@ svn:wc:ra_dav:version-url
 V 71
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/pencil_small.png
 END
-cake.png
-K 25
-svn:wc:ra_dav:version-url
-V 63
-/svn/srp/!svn/ver/1/trunk/public/images/template/icons/cake.png
-END
 flag_red.png
 K 25
 svn:wc:ra_dav:version-url
 V 67
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/flag_red.png
+END
+cake.png
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/srp/!svn/ver/1/trunk/public/images/template/icons/cake.png
 END
 html.png
 K 25
@@ -333,17 +351,17 @@ svn:wc:ra_dav:version-url
 V 64
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/money.png
 END
-add.png
-K 25
-svn:wc:ra_dav:version-url
-V 62
-/svn/srp/!svn/ver/1/trunk/public/images/template/icons/add.png
-END
 help.png
 K 25
 svn:wc:ra_dav:version-url
 V 63
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/help.png
+END
+add.png
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/srp/!svn/ver/1/trunk/public/images/template/icons/add.png
 END
 flag_green.png
 K 25
@@ -387,17 +405,17 @@ svn:wc:ra_dav:version-url
 V 66
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/user_go.png
 END
-flag_orange.png
-K 25
-svn:wc:ra_dav:version-url
-V 70
-/svn/srp/!svn/ver/1/trunk/public/images/template/icons/flag_orange.png
-END
 flag_yellow.png
 K 25
 svn:wc:ra_dav:version-url
 V 70
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/flag_yellow.png
+END
+flag_orange.png
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/srp/!svn/ver/1/trunk/public/images/template/icons/flag_orange.png
 END
 star.png
 K 25
@@ -440,6 +458,12 @@ K 25
 svn:wc:ra_dav:version-url
 V 70
 /svn/srp/!svn/ver/1/trunk/public/images/template/icons/information.png
+END
+arrow_right.png
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/srp/!svn/ver/74/trunk/public/images/template/icons/arrow_right.png
 END
 cross.png
 K 25

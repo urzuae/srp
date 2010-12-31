@@ -1,52 +1,0 @@
-10
-
-dir
-65
-http://10.0.0.98/svn/srp/trunk/cache
-http://10.0.0.98/svn/srp
-
-
-
-2010-12-23T19:39:06.636718Z
-51
-marlen
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2c622af1-a244-4839-91e9-22ef084dadd8
-
-acl
-dir
-
-autoloader
-dir
-
-smarty
-dir
-
-dates
-dir
-
-excel
-dir
-
-log
-dir
-
-menu
-dir
-
-catalogs
-dir
-

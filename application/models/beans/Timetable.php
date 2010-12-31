@@ -35,11 +35,14 @@ class Timetable
      */
     const ID_TIMETABLE = "pcs_srp_core_timetables.id_timetable";
     const ID_EMPLOYEE = "pcs_srp_core_timetables.id_employee";
-    const DATE = "pcs_srp_core_timetables.date";
+    const ID_PROJECT = "pcs_srp_core_timetables.id_project";
+    const ID_PROJECT_TASK = "pcs_srp_core_timetables.id_project_task";
     const ID_APPROVER_1 = "pcs_srp_core_timetables.id_approver_1";
     const ID_APPROVER_2 = "pcs_srp_core_timetables.id_approver_2";
     const ID_CURRENT_APPROVER = "pcs_srp_core_timetables.id_current_approver";
+    const DESCRIPTION = "pcs_srp_core_timetables.description";
     const ATTENDANCE_TYPE = "pcs_srp_core_timetables.attendance_type";
+    const DATE = "pcs_srp_core_timetables.date";
     const STATUS = "pcs_srp_core_timetables.status";
 
 
@@ -60,11 +63,19 @@ class Timetable
 
 
     /**
-     * $date
+     * $idProject
      *
-     * @var datetime $date
+     * @var int $idProject
      */
-    private $date;
+    private $idProject;
+
+
+    /**
+     * $idProjectTask
+     *
+     * @var int $idProjectTask
+     */
+    private $idProjectTask;
 
 
     /**
@@ -92,11 +103,27 @@ class Timetable
 
 
     /**
+     * $description
+     *
+     * @var string $description
+     */
+    private $description;
+
+
+    /**
      * $attendanceType
      *
      * @var int $attendanceType
      */
     private $attendanceType;
+
+
+    /**
+     * $date
+     *
+     * @var datetime $date
+     */
+    private $date;
 
 
     /**
@@ -155,25 +182,47 @@ class Timetable
     }
 
     /**
-     * Set the date value
+     * Set the idProject value
      *
-     * @param datetime date
+     * @param int idProject
      * @return Timetable $timetable
      */
-    public function setDate($date)
+    public function setIdProject($idProject)
     {
-        $this->date = $date;
+        $this->idProject = $idProject;
         return $this;
     }
 
     /**
-     * Return the date value
+     * Return the idProject value
      *
-     * @return datetime
+     * @return int
      */
-    public function getDate()
+    public function getIdProject()
     {
-        return $this->date;
+        return $this->idProject;
+    }
+
+    /**
+     * Set the idProjectTask value
+     *
+     * @param int idProjectTask
+     * @return Timetable $timetable
+     */
+    public function setIdProjectTask($idProjectTask)
+    {
+        $this->idProjectTask = $idProjectTask;
+        return $this;
+    }
+
+    /**
+     * Return the idProjectTask value
+     *
+     * @return int
+     */
+    public function getIdProjectTask()
+    {
+        return $this->idProjectTask;
     }
 
     /**
@@ -243,6 +292,28 @@ class Timetable
     }
 
     /**
+     * Set the description value
+     *
+     * @param string description
+     * @return Timetable $timetable
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Return the description value
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Set the attendanceType value
      *
      * @param int attendanceType
@@ -262,6 +333,28 @@ class Timetable
     public function getAttendanceType()
     {
         return $this->attendanceType;
+    }
+
+    /**
+     * Set the date value
+     *
+     * @param datetime date
+     * @return Timetable $timetable
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+        return $this;
+    }
+
+    /**
+     * Return the date value
+     *
+     * @return datetime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 
     /**
@@ -303,7 +396,8 @@ class Timetable
         "released"=>2,
         "rejected"=>3,
         "approved"=>4,
-        "not_registered"=>5
+        "not_registered"=>5,
+        "process"=>6
     );
 
     /**
@@ -315,7 +409,8 @@ class Timetable
         2=>"Liberada",
         3=>"Rechazada",
         4=>"Aprobada",
-        5=>"not_registered"
+        5=>"not_registered",
+        6=>"En proceso"
     );
 
     /**

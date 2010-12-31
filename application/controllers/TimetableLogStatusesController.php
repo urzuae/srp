@@ -72,6 +72,7 @@ class TimetableLogStatusesController extends CrudController
             'id_timetable_log_status' => $timetableLogStatuses->getIdTimetableLogStatus(),
             'id_timetable_log' => $timetableLogStatuses->getIdTimetableLog(),
             'status' => $timetableLogStatuses->getStatus(),
+            'rejected_reason' => $timetableLogStatuses->getRejectedReason(),
         );
         $this->view->post = $post;
         $this->setTitle('Edit TimetableLogStatuses');
@@ -85,7 +86,8 @@ class TimetableLogStatusesController extends CrudController
         $timetableLogStatusesCatalog = TimetableLogStatusesCatalog::getInstance();
         $idTimetableLog = utf8_decode($this->getRequest()->getParam('id_timetable_log'));
         $status = utf8_decode($this->getRequest()->getParam('status'));
-        $timetableLogStatuses = TimetableLogStatusesFactory::create($idTimetableLog, $status);
+        $rejectedReason = utf8_decode($this->getRequest()->getParam('rejected_reason'));
+        $timetableLogStatuses = TimetableLogStatusesFactory::create($idTimetableLog, $status, $rejectedReason);
         $timetableLogStatusesCatalog->create($timetableLogStatuses);  
         $this->view->setTpl('_row');
         $this->view->setLayoutFile(false);
@@ -102,6 +104,7 @@ class TimetableLogStatusesController extends CrudController
         $timetableLogStatuses = $timetableLogStatusesCatalog->getById($idTimetableLogStatus);
         $timetableLogStatuses->setIdTimetableLog($this->getRequest()->getParam('id_timetable_log'));
         $timetableLogStatuses->setStatus($this->getRequest()->getParam('status'));
+        $timetableLogStatuses->setRejectedReason($this->getRequest()->getParam('rejected_reason'));
         $timetableLogStatusesCatalog->update($timetableLogStatuses);
         $this->setFlash('ok','Successfully edited the TimetableLogStatuses');
         $this->_redirect('timetable-log-statuses/list');

@@ -14,8 +14,8 @@
 /**
  * Dependences
  */
-
 require_once "lib/controller/CrudController.php";
+require_once "lib/managers/ExportManager.php";
 require_once "application/models/catalogs/TimetableCatalog.php";
 require_once "application/models/catalogs/TimetableHourCatalog.php";
 require_once "application/models/catalogs/EmployeeCatalog.php";
@@ -38,411 +38,51 @@ require_once "application/models/catalogs/ProjectTaskCatalog.php";
  * @version    1.0.0 SVN: $Revision$
  */
 class ExportController extends BaseController
-{    
- 	protected function noRender()
+{
+    
+    /**
+     * Recibe los parámetros de búsqueda
+     */
+    public function findAction()
     {
-    	$this->getHelper('viewRenderer')->setNoRender();
+    	$startWeek = mktime();
+		$endWeek = mktime();
+		while(date("w",$startWeek)!=1){
+			$startWeek -= 3600;
+		}
+		while(date("w",$endWeek)!=0){
+			$endWeek += 3600;
+		}
+		$startDay = date("Y-m-d",$startWeek);
+		$endDay = date("Y-m-d",$endWeek);    	
+    	$start = $this->getRequest()->getParam('startp');
+    	$end = $this->getRequest()->getParam('endp');  
+    	if($start == null)
+    		$this->view->startDate = $startDay;
+    	else 
+    		$this->view->startDate = $start;
+    		
+    	if ($end == null)
+    		$this->view->endDate = $endDay;
+    	else 
+    		$this->view->endDate = $end;    		    	
+    	$this->setTitle('Exportar Archivo Baan');
+        $this->view->setTpl('Find');        
     }
     
     /**
      * Exporta los datos al archivo Baan
      */
     public function excelAction()
-    {  	
+    {
     	require_once 'excel/ExcelExt.php';
     	
-    	$date = $this->getRequest()->getParam('date');
-    	if (!$date)
-    	{
-    		$startWeek = mktime();
-			$endWeek = mktime();
-			while(date("w",$startWeek)!=1){
-				$startWeek -= 3600;
-			}
-			while(date("w",$endWeek)!=0){
-				$endWeek += 3600;
-			}
-			$startDate = date("Y-m-d",$startWeek);
-			$endDate = date("Y-m-d",$endWeek);
-    	}
-    	else
-    	{
-	    	$startDate = date('Y-m-d', strtotime('last Monday', strtotime($date)));
-		    $endDate = date('Y-m-d', strtotime('next Sunday', strtotime($date)));
-    	}
-    	
-    	$export = array();
-    	$timetables = TimetableCatalog::getInstance()->getTimeTablesByDate($startDate,$endDate);
-    	if (empty($timetables))
-    	{
-    		echo "No existen registros en la fecha ingresada";
-    		die();
-    	}
-    	foreach ($timetables as $timetable)
-    	{
-    		$idProjects = TimetableHourCatalog::getInstance()->getIdProjectsByTimetable($timetable['id_timetable']); 
-    		   		    		    	
-    		foreach ($idProjects as $idProject)
-    		{    			
-    			/***Datos de Empleado***/
-    			$employee = EmployeeCatalog::getInstance()->getById($timetable['id_employee']);
-	    		$username = $employee->getUsername();
-	    		$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());    	
-	    		$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
-	    		$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
-	    		$departmentEmployee = $department->getDepartmentCode();
-	    		
-	    		/***Datos de Proyecto***/
-	    		$specificProject = SpecificProjectCatalog::getInstance()->getByIdProjectObject($idProject['id_project']);
-	        	if ($specificProject == null)
-	        	{
-	        		$departmentProject = DepartmentProjectCatalog::getInstance()->getByIdProjectObject($idProject['id_project']);
-	        		$department = DepartmentCatalog::getInstance()->getById($departmentProject->getIdDepartment());
-	        		$projectName = $department->getDepartmentName();
-	        	}
-	        	else
-	        		$projectName = $specificProject->getProjectName();
-	        	
-	        	/******************************************************Datos de Planilla************************************************************************/
-	    		/***Inicio y Fin de Semana***/
-	        	$weekBeginning = date('Y-m-d H:i:s', strtotime('last Monday', strtotime($timetable['date'])));
-	        	list($dateweekBeginning, $timeweekBeginning) = explode(" ",$weekBeginning);
-	        	$weekEnd = date('Y-m-d H:i:s', strtotime('next Sunday', strtotime($timetable['date'])));
-    			list($dateweekEnd, $timeweekEnd) = explode(" ",$weekEnd);
-    			
-	    		
-	    		/***Fecha de creación***/
-    			list($dateCreated, $timeCreated) = explode(" ",$timetable['date']);
-    			$dDateCreated = explode('-', $dateCreated);
-	        	$yearDateCreated = $dDateCreated[0];
-	        	$monthDateCreated = $dDateCreated[1];
-	        	$monthDateCreated=(string)(int)$monthDateCreated;
-	        	$dayDateCreated = $dDateCreated[2];
-	        	$dayDateCreated =(string)(int)$dayDateCreated;
-	        	$dayWeekDateCreated = date("w",mktime(0,0,0,$monthDateCreated,$dayDateCreated,$yearDateCreated));
-	        	
-    			/***Fecha de liberación***/
-    			$dateRelease = TimetableCatalog::getInstance()->getDateReleaseByIdTimetable($timetable['id_timetable']);
-	    		list($dateRelease, $timeRelease) = explode(" ",$dateRelease);
-    			
-	    		$dRelease = explode('-', $dateRelease);
-	        	$yearRelease = $dRelease[0];
-	        	$monthRelease = $dRelease[1];
-	        	$monthRelease=(string)(int)$monthRelease;
-	        	$dayRelease = $dRelease[2];
-	        	$dayRelease =(string)(int)$dayRelease;
-	        	$timestampDateRelease = mktime(0,0,0,$monthRelease,$dayRelease,$yearRelease);
-	        	
-	    		/***Fecha de aprobación***/
-	    		$dateApproval = TimetableCatalog::getInstance()->getDateApprovalByIdTimetable($timetable['id_timetable']);
-	    		list($dateApproval, $timeApproval) = explode(" ",$dateApproval);
-
-	    		$dApproval = explode('-', $dateApproval);
-	        	$yearApproval = $dApproval[0];
-	        	$monthApproval = $dApproval[1];
-	        	$monthApproval=(string)(int)$monthApproval;
-	        	$dayApproval = $dApproval[2];
-	        	$dayApproval =(string)(int)$dayApproval;
-	        	$timestampDateApproval = mktime(0,0,0,$monthApproval,$dayApproval,$yearApproval);
-	    		
-	    		/***Sumatoria de Horas***/
-    			$sumHour = TimetableHourCatalog::getInstance()->getSumHoursByIdProject($idProject['id_project'],$timetable['id_timetable']);    			
-    			
-    			/***Fecha en que se debió liberar***/
-    			if($dayWeekDateCreated != '5')
-    				$mustDateRelease = date('Y-m-d H:i:s', strtotime('next Friday', strtotime($timetable['date'])));
-    			else
-    				$mustDateRelease = $timetable['date'];
-    				
-    			list($dateMustDateRelease, $timeMustDateRelease) = explode(" ",$mustDateRelease);
-    			
-    			$dMustRelease = explode('-', $dateMustDateRelease);
-	        	$yearMustRelease = $dMustRelease[0];
-	        	$monthMustRelease = $dMustRelease[1];
-	        	$monthMustRelease=(string)(int)$monthMustRelease;
-	        	$dayMustRelease = $dMustRelease[2];
-	        	$dayMustRelease =(string)(int)$dayMustRelease;
-	        	$timestampMustDateRelease = mktime(0,0,0,$monthMustRelease,$dayMustRelease,$yearMustRelease);	        		        		       
-	        	
-	        	/***Días trancurridos para Liberación***/
-	        	$daysRelease = ($timestampDateRelease - $timestampMustDateRelease)/(60 * 60 * 24);
-	        	
-	        	/***Días transcurridos para Aprobación***/
-    			$daysApproval = ($timestampDateApproval - $timestampDateRelease)/(60 * 60 * 24);				
-    			/*************************************************************************************************************************************************/
-    			
-    			/***Datos de Aprobadores***/
-    			$approveLevel1 =ProjectCatalog::getInstance()->getApproverLevel1($idProject['id_project']);
-    			$approveLevel2 =ProjectCatalog::getInstance()->getApproverLevel2($idProject['id_project']);
-    			$approveLevel12 =ProjectCatalog::getInstance()->getApproverLevel12($idProject['id_project']);
-    			$approveLevel22 =ProjectCatalog::getInstance()->getApproverLevel22($idProject['id_project']);
-    			if($approveLevel1 != null)
-    			{
-	    			$approver1 = EmployeeCatalog::getInstance()->getById($approveLevel1);
-	    			$usernameApprover1 = $approver1->getUsername();
-	    			$personApprover1 = PersonCatalog::getInstance()->getById($approver1->getIdPerson());
-	    			$nameApprover1 = $personApprover1->getName()." ".$personApprover1->getMiddleName()." ".$personApprover1->getLastName();	    			
-    			}
-    			if($approveLevel2 != null)
-    			{
-	    			$approver2 = EmployeeCatalog::getInstance()->getById($approveLevel2);
-	    			$usernameApprover2 = $approver2->getUsername();
-	    			$personApprover2 = PersonCatalog::getInstance()->getById($approver2->getIdPerson());
-	    			$nameApprover2 = $personApprover2->getName()." ".$personApprover2->getMiddleName()." ".$personApprover2->getLastName();
-    			}
-    			
-    			if (($approveLevel1 == $timetable['	id_current_approver']) || ($approveLevel12 == $timetable['	id_current_approver']))
-    			{
-    				$approved1 = "Aprobó";
-    				$approved2 = " ";
-    			}
-    			else
-    			{
-    				$approved1 = " ";
-    				$approved2 = "Aprobó";    				
-    			}
-    			
-    			$export[] = array(
-    				'Nro. Empleado' => $username,
-    				'Nombre del Empleado' => $nameEmployee,
-    				'Departamento' => $departmentEmployee,
-    				'Inicio de Semana' => $dateweekBeginning,
-    				'Fin de Semana' => $dateweekEnd,
-    				'Proyecto' => $projectName,
-    				'Horas' => $sumHour,
-    				'Fecha de Creación' => $dateCreated,
-    				'Hora de Creación' => $timeCreated,
-    				'Creado por' => $username,
-    				'Fecha Liberación' => $dateRelease,
-    				'Hora Liberación' => $timeRelease,
-    				'Status Planilla' => "Aprobado",
-    				'Nro. de Días en el Estatus' => "0",
-    				'Nro. de Días para Liberar' => $daysRelease,
-    				'Nro. de Días para Aprobar' => $daysApproval,
-    				'Nro. de Días en Proceso' => "0",
-    				'Niv.1-Aprobador' => $usernameApprover1,
-    				'Niv.1-Status' => $approved1,
-    				'Niv.1-Fecha' => $dateApproval,
-    				'Niv.1-Hora' => $timeApproval,
-    				'Niv.2-Aprobador' => $usernameApprover2,
-    				'Niv.2-Status' => $approved2,
-    				'Niv.2-Fecha' => $dateApproval,
-    				'Niv.2-Hora' => $timeApproval
-    			);
-    		}
-    	}
-    	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
-       	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
-       	$this->noRender();	
+    	$startDate = $this->getRequest()->getParam('startp');
+    	$this->view->startDate = $startDate;
+    	$endDate = $this->getRequest()->getParam('endp');
+    	$this->view->endDate = $endDate;
+    	$export = ExportManager::getInstance()->getTimetables($startDate,$endDate);
+       	$excel=ExcelExt::createExcel("Archivo Baan".date("Y-m-d").".xls", $export);
+       	$this->noRender();   	
     }
-    
-    public function employeesAction()
-    {
-	
-	$data = $this->getRequest()->getParam('data');
-	$json = array();
-	$idEmployees = EmployeeCatalog::getInstance()->getIdsByDepartment($data);
-	foreach ($idEmployees as $idEmployee)
-	{
-		//Employee information
-		$employee = EmployeeCatalog::getInstance()->getById($idEmployee);
-		$username = $employee->getUsername();	
-		$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
-		$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
-		$json[] = array('idEmp' => utf8_encode($username), 'name' => utf8_encode($nameEmployee));
-	}
-	$json = json_encode($json);
-	print_r($json);
-	$this->noRender();
-    }
-    
-    public function generateAction()
-    {
-	
-	$this->view->setTpl('Generate');
-	$idDepartments = DepartmentCatalog::getInstance()->retrieveAllIds();
-	foreach ($idDepartments as $idDept)
-	{
-		$department = DepartmentCatalog::getInstance()->getById($idDept);
-		$departmentName = $department->getDepartmentName();
-		$departments[] = array ('idDept' => $idDept, 'name' => $departmentName);
-	}
-	$this->view->departments = $departments;
-    }
-    
-    //Exports to an excel file, employees have not submit planillas
-    public function missingAction()
-    {
-	//require_once 'PEAR/Spreadsheet/Excel/Writer.php';
-	
-	$startDate = $this->getRequest()->getParam('startDate');
-	$endDate = $this->getRequest()->getParam('endDate');
-	
-	$idEmp = $this->getRequest()->getParam('idEmp');
-	$idDepartment = $this->getRequest()->getParam('idDept');
-	$export = array();
-    	if (!$startDate)
-    	{
-    		$startWeek = mktime();
-		while(date("w",$startWeek)!=1)
-		{
-			$startWeek -= 3600;
-		}
-		$startDate = date("Y-m-d",$startWeek);
-	}
-	else
-		$startDate = date('Y-m-d', strtotime($startDate));
-	if (!$endDate)
-	{
-		$endWeek = mktime();
-		while(date("w",$endWeek)!=0)
-		{
-			$endWeek += 3600;
-		}
-		$endDate = date("Y-m-d",$endWeek);
-    	}
-	else
-		$endDate = date('Y-m-d', strtotime($endDate));
-    	
-	/*$workbook = new Spreadsheet_Excel_Writer("Reporte planillas faltantes de ".$startDate." a ".$endDate.".xls");
-	$worksheet = activityConfDatasheetXls($workbook, $startDate, $endDate);
-	$data_format = setFormatReport($workbook);
-	$row = 5;
-	$col = 1;
-	$flag = 1;*/
-
-	$timetables = TimetableCatalog::getInstance()->getTimeTablesGeneralByDate($startDate, $endDate);
-	if(is_numeric($idEmp))
-	{
-		$timetablesByEmp = TimeTableCatalog::getInstance()->getByIdEmployee($idEmp)->toarray();
-		$timetablesByEmp = array_intersect($timetables, $timetablesByEmp);
-		if(empty($timetablesByEmp))
-		{
-			$employee = EmployeeCatalog::getInstance()->getById($idEmp);
-			$username = $employee->getUsername();	
-			$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
-			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
-			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
-			$departmentEmployee = $department->getDepartmentCode();
-			/*$height = 30;
-			$format = NULL;
-			$hidden = FALSE;
-			$level = 0;
-			$worksheet->setRow ( $row, $height, $format, $hidden, $level );
-			$worksheet->write ( $row, $col, "$flag", $data_format ); //consecutivo
-			$worksheet->write ( $row, $col + 1, "$username", $data_format );
-			$worksheet->write ( $row, $col + 2, "$nameEmployee", $data_format );
-			$worksheet->write ( $row, $col + 3, "$departmentEmployee", $data_format );
-			$row++;
-			$flag++;*/
-		}
-		else
-		{
-			print("Employee has submitted task for that period");
-			die();
-		}
-	}
-	else
-	{
-		$idEmployees = is_numeric($idDepartment) ?
-			EmployeeCatalog::getInstance()->getIdsByDepartment($idDepartment) :
-			EmployeeCatalog::getInstance()->retrieveAllIds();
-		if (!empty($timetables)){
-			foreach($timetables as $timetable)
-				$submitedEmployees[] = $timetable['id_employee'];
-			$idEmployees = array_diff($idEmployees, $submitedEmployees);
-		}
-		
-		foreach ($idEmployees as $idEmployee)
-		{
-			//Employee information
-			$employee = EmployeeCatalog::getInstance()->getById($idEmployee);
-			$username = $employee->getUsername();	
-			$person = PersonCatalog::getInstance()->getById($employee->getIdPerson());
-			$nameEmployee = $person->getName()." ".$person->getMiddleName()." ".$person->getLastName();
-			$department = DepartmentCatalog::getInstance()->getById($employee->getIdDepartment());
-			$departmentEmployee = $department->getDepartmentCode();
-			/*
-			$height = 30;
-			$format = NULL;
-			$hidden = FALSE;
-			$level = 0;
-			$worksheet->setRow ( $row, $height, $format, $hidden, $level );
-			$worksheet->write ( $row, $col, "$flag", $data_format ); //consecutivo
-			$worksheet->write ( $row, $col + 1, "$username", $data_format );
-			$worksheet->write ( $row, $col + 2, "$nameEmployee", $data_format );
-			$worksheet->write ( $row, $col + 3, "$departmentEmployee", $data_format );
-			$row ++;
-			$flag ++;*/
-		}	
-	}
-	/*
-	$workbook->send("Reporte planillas faltantes de $startDate a $endDate.xls");
-	toEndFileReport($workbook);
-	header('Content-Type: application/vnd.ms-excel;' );
-	readfile("Reporte planillas faltantes de $startDate a $endDate.xls");
-	toEndFileReport($workbook);*/
-	
-    	$dateExport = str_replace(":","",str_replace("-","",str_replace(" ","",date("Y-m-d H:i"))));
-       	$excel=ExcelExt::createExcel("ArchivoBaan".$dateExport.".xls", $export);
-       	$this->noRender();
-    }
-    
-    //
-    
-    
 }
-    function activityConfDatasheetXls($workbook, $startDate, $endDate)
-    {
-	$worksheet = & $workbook->addWorksheet("Reporte");
-	$worksheet->setLandscape();
-	$worksheet->repeatRows(0, 5);
-	$resourceName = "REPORTE DE PLANILLAS FALTANTES";
-	$period = "PERIODO DEL REPORTE: Del ".$startDate." al ".$endDate;
-	
-	//los merges
-	$worksheet->setMerge ( 0, 1, 0, 4 ); // Nombre del acceso
-	$worksheet->setMerge ( 1, 1, 1, 4 ); // 
-	$worksheet->setMerge ( 2, 1, 2, 4 ); //
-	$worksheet->setMerge ( 3, 1, 3, 4 ); //
-	
-	//el formato
-	$header_format = $workbook->addFormat ( array ('align' => 'left' ) ); // formato para los encabezados
-	$header_format->setBold ();
-	$header_format->setBgColor ( "gray" );
-	$header_format->setColor ( "white" );
-	$titles_format = $workbook->addFormat ( array ('align' => 'center' ) ); // formato para los titulos
-	$titles_format->setSize (11);
-	$titles_format->setBold ();
-	
-	//el ancho de las columnas
-	$worksheet->setColumn ( 1, 1, 8 ); // # consecutivo
-	$worksheet->setColumn ( 2, 2, 15 ); // Numero de Empleado
-	$worksheet->setColumn ( 3, 3, 40 ); // Nombre Empleado
-	$worksheet->setColumn ( 4, 4, 18 ); // Departamento
-	
-	//los textos
-	$worksheet->write ( 0, 1, "BITÁCORA", $header_format );
-	$worksheet->write ( 1, 1, $resourceName, $header_format );
-	$worksheet->write ( 2, 1, $period, $header_format );
-	
-	$worksheet->write ( 4, 1, "#", $titles_format );
-	$worksheet->write ( 4, 2, "ID EMPLEADO", $titles_format );
-	$worksheet->write ( 4, 3, "EMPLEADO", $titles_format );
-	$worksheet->write ( 4, 4, "DEPARTAMENTO", $titles_format );
-	return $worksheet;
-    }
-    
-    function setFormatReport($workbook)
-    {
-	$data_format = $workbook->addFormat(array('align' => 'left', 'VAlign' => 'vcenter'));
-	$data_format->setSize(10);
-	$data_format->setTextWrap();
-	return $data_format;
-    }
-
-    function toEndFileReport($workbook)
-    {
-	$workbook->close();
-	return;
-    }

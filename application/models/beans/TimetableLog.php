@@ -198,24 +198,4 @@ class TimetableLog
         return $this->type;
     }
 
-    /**
-     * Type
-     * @var Array
-     */
-    public static $Type = array(
-        "create"=>1,
-        "hours"=>2,
-        "status"=>3
-    );
-
-    /**
-     * Type Labels
-     * @var Array
-     */
-    public static $TypeLabel = array(
-        1=>"create",
-        2=>"hours",
-        3=>"status"
-    );
-
 }

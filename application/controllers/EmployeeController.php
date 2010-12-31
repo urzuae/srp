@@ -16,8 +16,11 @@
  */
 require_once "lib/controller/CrudController.php";
 require_once "application/models/catalogs/EmployeeCatalog.php";
+require_once "application/models/catalogs/CalendarDayCatalog.php";
+require_once "application/models/catalogs/TimetableCatalog.php";
 require_once "lib/utils/employee_load/EmployeeUtilities.php";
 require_once "lib/managers/EmployeeManager.php";
+require_once "lib/managers/CalendarDayManager.php";
 define("EMP_DIR", "./data/load/employee/");
 
 /**
@@ -121,6 +124,7 @@ class EmployeeController extends CrudController
         $this->setFlash('ok','Successfully edited the Employee');
         $this->_redirect('employee/list');
     }
+
     public function uploadAction() {
         try {
             $row = 0;
@@ -161,4 +165,17 @@ class EmployeeController extends CrudController
             $this->view->warning_files = "No hay ningun archivo para carga de datos";
         }
     }
+
+    public function approverCalendarAction() {
+        $idEmployee = $this->getUser()->getBeanEmployee()->getIdEmployee();
+        $projects = TimetableCatalog::getInstance()->getIdProjectByIdEmployee($idEmployee);
+        $daysStatuses = CalendarDayManager::getInstance()->getDayStatus($projects, $idEmployee);
+        $this->view->daysStaus2 = json_encode($daysStatuses["daysStatuses2"]);
+        $this->view->daysStaus3 = json_encode($daysStatuses["daysStatuses3"]);
+        $this->view->daysStaus4 = json_encode($daysStatuses["daysStatuses4"]);
+        $this->view->daysStaus1 = json_encode($daysStatuses["daysStatuses1"]);
+        $this->view->projects = $daysStatuses["strProjects"];
+        $this->setTitle('Calendario de Tareas');
+    }
+
 }

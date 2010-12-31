@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 57
-/svn/srp/!svn/ver/41/trunk/application/views/calendar-day
+/svn/srp/!svn/ver/66/trunk/application/views/calendar-day
 END
 Form.tpl
 K 25
@@ -20,6 +20,12 @@ K 25
 svn:wc:ra_dav:version-url
 V 66
 /svn/srp/!svn/ver/33/trunk/application/views/calendar-day/_row.tpl
+END
+View.tpl
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/srp/!svn/ver/66/trunk/application/views/calendar-day/View.tpl
 END
 List.tpl
 K 25

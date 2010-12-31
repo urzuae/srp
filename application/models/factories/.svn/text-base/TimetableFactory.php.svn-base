@@ -32,25 +32,31 @@ class TimetableFactory
    /**
     * Create a new Timetable instance
     * @param int $idEmployee
-    * @param datetime $date
+    * @param int $idProject
+    * @param int $idProjectTask
     * @param int $idApprover1
     * @param int $idApprover2
     * @param int $idCurrentApprover
+    * @param string $description
     * @param int $attendanceType
+    * @param datetime $date
     * @param int $status
     * @return Timetable
     */
-   public static function create($idEmployee, $date, $idApprover1, $idApprover2, $idCurrentApprover, $attendanceType, $status)
+   public static function create($idEmployee, $idProject, $idProjectTask, $idApprover1, $idApprover2, $idCurrentApprover, $description, $attendanceType, $date, $status)
    {
       //throw new Exception('Factory Deprecated');
       $newTimetable = new Timetable();
       $newTimetable
           ->setIdEmployee($idEmployee)
-          ->setDate($date)
+          ->setIdProject($idProject)
+          ->setIdProjectTask($idProjectTask)
           ->setIdApprover1($idApprover1)
           ->setIdApprover2($idApprover2)
           ->setIdCurrentApprover($idCurrentApprover)
+          ->setDescription($description)
           ->setAttendanceType($attendanceType)
+          ->setDate($date)
           ->setStatus($status)
       ;
       return $newTimetable;
@@ -66,11 +72,14 @@ class TimetableFactory
         $newTimetable = new Timetable();
         $newTimetable->setIdTimetable($fields['id_timetable']);
         $newTimetable->setIdEmployee($fields['id_employee']);
-        $newTimetable->setDate($fields['date']);
+        $newTimetable->setIdProject($fields['id_project']);
+        $newTimetable->setIdProjectTask($fields['id_project_task']);
         $newTimetable->setIdApprover1($fields['id_approver_1']);
         $newTimetable->setIdApprover2($fields['id_approver_2']);
         $newTimetable->setIdCurrentApprover($fields['id_current_approver']);
+        $newTimetable->setDescription($fields['description']);
         $newTimetable->setAttendanceType($fields['attendance_type']);
+        $newTimetable->setDate($fields['date']);
         $newTimetable->setStatus($fields['status']);
         return $newTimetable;
     }

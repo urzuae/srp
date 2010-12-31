@@ -1,13 +1,13 @@
 var holidays=null;
 var enable_saturdays=null;
 var enable_sundays=null;
-var dayIDs = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-var start_hour,end_hour, current_date, id_event,schedule,is_checkbox,projects, tasks,week=null;
+var dayIDs = {"monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":true,"sunday":true};
+var schedule,is_checkbox,projects, tasks,id_project_task,week,hours=null;
 var json_hours=[{}];
 var lastsel2;
 var mydata2 = [ {id_timetable:"",id_project:"",project_code:"",id_project_task:"",task_code:"",attendance_label:"",attendance_type:"",description:"",monday:"",tuesday:"",wendsday:"",thursday:"",friday:"",saturday:"",sunday:"",hours:"",status:"Borrador"}];
 $(document).ready(function() {
-
+    
 
     $("#projects").hide();
     schedule=check_schedule($("#schedule_type").val());
@@ -20,46 +20,13 @@ $(document).ready(function() {
     var y = date.getFullYear();
     var addDays=lastDayOfMonth(y, m)-d;
 
-    $("#project_type").change(function(){
-        if($(this).val()=="0")
-            $("#projects_tr, #tasks_tr, #description_tr, #create").hide();
-        else{
-            $("#projects_tr, #tasks_tr, #description_tr, #create").hide();
-            get_projects($(this).val());
-        }
-    });
-
-    $("#projects").change(function(){
-        get_tasks($("#project_type").val(),$(this).val());
-    });
-
-    $("#tasks").change(function(){
-        //alert();
-        if($(this).val()=="0" || $(this).val()=="")
-            $("#create, #description_tr").hide();
-        else
-            $("#create, #description_tr").show();
-    });
-
-    $("#create").click(function(){
-        create_timetable_hour(current_date);
-    });
-
-    $("#delete").click(function(){
-        delete_timetable_hour(id_event);
-    });
-
-    $("#release").click(function(){
-        release_timetable_hour(id_event);
-    });
-
     holidays=
     {
         "2010":
 
         {
             "11":["2","15","18"],
-            "12":["24","31"]
+            "12":["24","30","31"]
         },
         "2011":{
             "1":["1","5"]
@@ -80,18 +47,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#new").click(function(){
-        jQuery("#rowed5").jqGrid('editGridRow',"new",{
-            height:280,
-            reloadAfterSubmit:false
-        });
-    });
-
     $( "#datepicker" ).datepicker( "option",$.datepicker.regional[ "es" ] );
-
-
-
-// page is now ready, initialize the calendar...
 
 });
 
@@ -107,7 +63,7 @@ function createTimetable(dateRange){
                         var thegrid = jQuery("#rowed5")[0];
                         var myjson = eval("("+jsondata.responseText+")");
                         projects=myjson.projects;
-                        //alert(JSON.stringify(myjson.hours));
+                       // alert(JSON.stringify(myjson.hours));
                         if(!jQuery.isEmptyObject(myjson.hours)){
                             thegrid.addJSONData(myjson.hours);
                             sumHours();
@@ -199,9 +155,9 @@ function createTimetable(dateRange){
              editoptions:{
                 value:":;1:Presencias reales;2:Permiso recuperable;3:Permiso no recuperable;4:Horas extras;5:Enfermedad < 4 días;6:Ausencias autorizadas",
                 dataEvents: [
-                    { type: 'change', 
+                    {type: 'change', 
                       fn: function(e) 
-                          { 
+                          {
                            $("#rowed5").jqGrid("setRowData",lastsel2,{attendance_type:$("select[id*='attendance_label']").val()});
                           } 
                     }
@@ -216,7 +172,7 @@ function createTimetable(dateRange){
             index:'monday',
             width:25,
             sorttype:"int",
-            editable: true,
+            editable: dayIDs.monday,
             editoptions:{
                 maxLength: 2,
                 style:""
@@ -311,52 +267,41 @@ function createTimetable(dateRange){
             if(!is_checkbox){
                 if(!edit_mode(id) && lastsel2==id){
                     data=$("#rowed5").jqGrid("getRowData", id);
-                    $('#rowed5').jqGrid('editRow',id,true,'','','','',alternSave);
-                    $("#"+id+"_project_code").html("");
-                    $("#"+id+"_project_code").html($("#projects").html());
-                    $("#"+id+"_project_code").bind("change",{},function(event, task){
-                        get_tasks($(this).find("option:selected").attr("id"),id,task);
-                    });
-                    if(data.project_code){
-                        $("#"+id+"_project_code").val(data.project_code);
-                        $("#"+id+"_project_code").trigger("change",[data.task_code]);
-                    }
+                    $('#rowed5').jqGrid('editRow',id,true,'','','','',alternSave,'','');
+                    buildProjects(id,data);
+                    keydown();
                 }else if(edit_mode(id) && lastsel2==id){
-                    data=$("#rowed5").jqGrid("getRowData", id);
-                    $("#rowed5").jqGrid("setRowData", id,{id_project_task:$("#"+id+"_task_code option:selected").attr("id")});
+                    id_project_task=$("#"+id+"_task_code option:selected").attr("id");
+                    //alert(id_project_task);
                     $("#rowed5").jqGrid('saveRow', lastsel2, false, 'clientArray');
                     $('#rowed5').jqGrid('restoreRow',id);
+                    $("#rowed5").jqGrid("setRowData", id,{id_project_task:id_project_task});
                     sumHours();
                 }else if(id && id!==lastsel2){
                     data=$("#rowed5").jqGrid("getRowData", id);
-                    $("#rowed5").jqGrid("setRowData", id,{id_project_task:$("#"+id+"_task_code option:selected").attr("id")});
+                    id_project_task=$("#"+lastsel2+"_task_code option:selected").attr("id");
+                    //alert(id_project_task);
                     $("#rowed5").jqGrid('saveRow', lastsel2, false, 'clientArray');
                     $('#rowed5').jqGrid('restoreRow',lastsel2);
-                    sumHours();
-                    $('#rowed5').jqGrid('editRow',id,true,'','','','',alternSave);
-                    $("#"+id+"_project_code").html("");
-                    $("#"+id+"_project_code").html($("#projects").html());
-                    $("#"+id+"_project_code").bind("change",{},function(event, task){
-                        get_tasks($(this).find("option:selected").attr("id"),id,task);
-                    });
-                    if(data.project_code){
-                        $("#"+id+"_project_code").val(data.project_code);
-                        $("#"+id+"_project_code").trigger("change",[data.task_code]);
-                    }
+                    $("#rowed5").jqGrid("setRowData", id,{id_project_task:id_project_task});
+                     sumHours();
+                    $('#rowed5').jqGrid('editRow',id,true,'','','','',alternSave,'','');
+                    buildProjects(id,data);
+                   keydown();
                     lastsel2=id;
                 }
             }else if(is_checkbox){
+                id_project_task=$("#"+id+"_task_code option:selected").attr("id");
                 $('#rowed5').jqGrid('setSelection',id, false);
                 $("#rowed5").jqGrid('saveRow', id, false, 'clientArray');
                 $('#rowed5').jqGrid('restoreRow',id);
+                $("#rowed5").jqGrid("setRowData", id,{id_project_task:id_project_task});
                 sumHours();
             }
 
 
         },
         beforeSelectRow:function(id,e){
-
-            //alert($(e.originalEvent.target).attr("type"));
             type=$(e.originalEvent.target).attr("type");
             if(e.originalEvent.target.id!="" && type=="checkbox")
                 is_checkbox=true;
@@ -364,6 +309,44 @@ function createTimetable(dateRange){
                 is_checkbox=false;
 
             return true;
+        },onSelectAll:function(ids, status){
+            restoreAll();
+            $("#rowed5").jqGrid("resetSelection");
+            if(status)
+                $("#cb_rowed5").attr("checked","checked");
+            else
+                $("#cb_rowed5").attr("checked","");
+            var i=0;
+            for(var a=1; a<ids.length; a++){
+                index=parseInt(ids[a]);
+                //alert(index);
+                data=$("#rowed5").jqGrid("getRowData", index);
+                if(status)
+                    if(data.status=="Borrador")
+                        $('#rowed5').jqGrid('setSelection',ids[a], false);
+            }
+            
+        }
+        ,gridComplete:
+        function()
+        {
+            var ids = $("#rowed5").getDataIDs();
+            
+            if(ids.length>0){
+                //alert(ids.length);
+                for(var i=0;i<ids.length;i++)
+                {
+                    var data=$("#rowed5").getRowData (ids[i]);
+                    if(data.status=="Liberada"){
+                        $("tr[id='"+ids[i]+"']").addClass("not-editable-row");
+                        $("tr[id='"+ids[i]+"']").find("input[type='checkbox']").attr("disabled","disabled");
+                        
+                    }
+                    $("#rowed5").setCell(ids[i],"monday",'','',{editable:false});
+                }
+            }
+            else
+                $("#cargando").hide();
         },
         pager:'#pager',
         caption: "Horas registradas desde "+dateRange.label
@@ -391,8 +374,8 @@ function createTimetable(dateRange){
     .navButtonAdd('#pager',{
         caption:"Eliminar Fila(s)",
         onClickButton: function(){
+            restoreAll();
             selected_rows=mygrid.getGridParam("selarrrow");
-            //alert(selected_rows);
             deleteRows(selected_rows);
         },
         position:"last"
@@ -403,9 +386,9 @@ function createTimetable(dateRange){
     .navButtonAdd('#pager',{
         caption:"Duplicar Fila(s)",
         onClickButton: function(){
-        //            $("#leads").GridUnload();
-        //            getLeads(false, true);
-        //pruebaList($("#leads").html());
+            restoreAll();
+            selected_rows=mygrid.getGridParam("selarrrow");
+            duplicateRows(selected_rows);
         },
         position:"last"
     }).navSeparatorAdd("#pager",{
@@ -415,21 +398,6 @@ function createTimetable(dateRange){
     .navButtonAdd('#pager',{
         caption:"Copiar Periodo",
         onClickButton: function(){
-        //            $("#leads").GridUnload();
-        //            getLeads(false, true);
-        //pruebaList($("#leads").html());
-        },
-        position:"last"
-    }).navSeparatorAdd("#pager",{
-        sepclass:"ui-separator",
-        sepcontent: ''
-    })
-    .navButtonAdd('#pager',{
-        caption:"Refrescar",
-        onClickButton: function(){
-        //            $("#leads").GridUnload();
-        //            getLeads(false, true);
-        //pruebaList($("#leads").html());
         },
         position:"last"
     }).navSeparatorAdd("#pager",{
@@ -439,6 +407,7 @@ function createTimetable(dateRange){
     .navButtonAdd('#pager',{
         caption:"Guardar",
         onClickButton: function(){
+            restoreAll();
             saveRows();
         },
         position:"last"
@@ -449,9 +418,8 @@ function createTimetable(dateRange){
     .navButtonAdd('#pager',{
         caption:"Liberar",
         onClickButton: function(){
-        //            $("#leads").GridUnload();
-        //            getLeads(false, true);
-        //pruebaList($("#leads").html());
+            restoreAll();
+            release_timetable();
         },
         position:"last"
     });
@@ -544,18 +512,6 @@ function noWeekendsOrHolidays(date) {
     return noWeekend[0] ? nationalDays(date) : noWeekend;
 }
 
-function get_projects(){
-
-    $.ajax({
-        method:"POST",
-        url:"../project/get-projects",
-        dataType:"json",
-        success:function(response){
-
-        }
-    });
-}
-
 function get_tasks(id_project, id, task){
     $.ajax({
         method:"POST",
@@ -577,173 +533,19 @@ function get_tasks(id_project, id, task){
     });
 }
 
-function create_timetable_hour(date){
-    calculate_hours();
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/create-hour",
-        data:{
-            id_task:$("#tasks").val(),
-            id_project:$("#projects").val(),
-            date:date,
-            hours:hours,
-            description:$("#description").val(),
-            type:$("#project_type").val()
-        },
-        dataType:"json",
-        success:function(response){
-            if(response.ok){
-                $("#calendar").fullCalendar('renderEvent',
-                {
-                    title: $("#tasks option:selected").text()+"-"+$("#projects option:selected").text(),
-                    start: start_hour,
-                    end: end_hour,
-                    id:response.id,
-                    status:1
-                },
-                true // make the event "stick"
-                );
-                $("#overlay").overlay().close();
-
-            }else if(response.error)
-                alert(response.error);
-            $("#overlay").overlay().close();
-        }
-    });
-}
-
-function delete_timetable_hour(id){
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/delete-hour",
-        data:{
-            id_timetable_hour:id
-        },
-        dataType:"json",
-        success:function(response){
-            if(response.ok){
-                $("#overlay_task").overlay().close();
-                alert("Se ha eliminado la actividad");
-                $("#calendar").fullCalendar('removeEvents',id);
-            }else if(response.error)
-                alert(response.error);
-        }
-    });
-}
-
-function getHours(){
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/get-hours",
-        dataType:"json",
-        success:function(response){
-            if(response.ok){
-
-            }else if(response.error)
-                alert(response.error);
-        }
-    });
-}
-
-function check_hours(events, event){
-    var is_ok=true;
-    $.each(events,function(){
-        if(dateWithin(this.start,this.end,event.start)||dateWithin(this.start,this.end,event.end) || (dateWithin(event.start,event.end,this.start) || dateWithin(event.start,event.end,this.end) || Date.parse(this.start)==Date.parse(event.start) || Date.parse(this.end)==Date.parse(event.end)) && this.id!=event.id){
-            alert("No se pueden traslapar actividades");
-            is_ok=false;
-            return false;
-        }
-    });
-    return is_ok;
-}
-
-function update_timetable_hour(event, revertFunc){
-    calculate_hours();
-    //alert(event.start);
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/update-hour",
-        dataType:"json",
-        data:{
-            id:event.id,
-            date:current_date,
-            hours:hours
-        },
-        success:function(response){
-            if(response.ok){
-
-            }else if(response.error)
-                alert(response.error);
-        }
-    });
-}
-
-function release_timetable_hour(id){
-    //calculate_hours();
-    //alert(event.start);
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/release-hour",
-        dataType:"json",
-        data:{
-            id:id
-        },
-        success:function(response){
-            if(response.ok){
-                alert("La planilla ha sido liberada");
-            }else if(response.error)
-                alert(response.error);
-        }
-    });
-}
-
-function release_timetable(){
-    //calculate_hours();
-    //alert(event.start);
-    $.ajax({
-        method:"POST",
-        url:"../timetable-hour/release-timetable",
-        dataType:"json",
-        data:{
-            hours:JSON.stringify(json_hours)
-        },
-        success:function(response){
-            if(response.ok){
-                alert("La planilla ha sido liberada");
-                $("#calendar").fullCalendar( 'refetchEvents' );
-            }else if(response.error)
-                alert(response.error);
-        }
-    });
-}
-
-function calculate_hours(){
-    hours=null;
-    if(start_hour==end_hour)
-        hours=1;
-    else
-        hours=end_hour.getHours()-start_hour.getHours();
-}
-
-function make_json_released_hours(event){
-    json_hours[event.id]={
-        "id":event.id
-    };
-}
-
 function check_schedule(schedule){
     switch (schedule){
         case "TS":
-            return 10;
+            return 50;
             break;
         case "MT":
-            return 5;
+            return 25;
             break;
         case "RP":
-            return 8;
+            return 40;
             break;
         default:
-            return 8;
+            return 40;
     }
 }
 
@@ -771,19 +573,7 @@ function addRow(){
         $("#rowed5").jqGrid("addRowData",0,mydata2[0]);
 }
 
-//function getRowData(id){
-//    if(edit_mode(id)){
-//        $('#rowed5').jqGrid('restoreRow',id);
-//        data=$("#rowed5").jqGrid("getRowData", id);
-//        $('#rowed5').jqGrid('editRow',id,true);
-//        return data;
-//    }
-//    else
-//        return $("#rowed5").jqGrid("getRowData", id);
-//}
-
 function customProject(value, column){
-    //alert(column);
     if(value=="0" || value==undefined || value=="")
         return [false,"Por favor elige un proyecto"];
     else if(value!="0")
@@ -799,10 +589,6 @@ function customTask(value, column){
         return [true,""];
     return [false,"Por favor elige una actividad"];
 }
-
-//function customDaysHours(value, column){
-//    getRowData();
-//}
 
 function customDescription(value, column){
     if(value.length>=5 && value.length<=30)
@@ -827,12 +613,14 @@ function getDateRangeOfWeek(weekNo){
 function saveRows(){
     rows=make_json_request();
     date=getDateRangeOfWeek(week);
-    if(!jQuery.isEmptyObject(rows)){
+    if(!rows)
+        alert("No se han seleccinado horas.");
+    else if(!jQuery.isEmptyObject(rows)){
         $.ajax({
             method:"POST",
             url:"../timetable/save-timetable",
             data:{
-                rows:$.toJSON(rows), beginning:date.beginning
+                rows_local:$.toJSON(rows.local),rows_db:$.toJSON(rows.db), beginning:date.beginning
             },
             dataType:"json",
             success:function(response){
@@ -844,35 +632,82 @@ function saveRows(){
             }
         });
     }else
-        alert("Existen errores en las horas seleccionadas");
+        alert("Existen errores en las horas seleccionadas.");
 }
 
-function deleteRows(rows){
-    for(var i=0; i<rows.length; i++){
-        index=parseInt(rows[i]);
-        var data=$("#rowed5").getRowData (index);
-        if(!data.id_timetable)
-            $("#rowed5").jqGrid("delRowData",index);
-        else
+function release_timetable(){
+    rows=make_json_request(true);
+    date=getDateRangeOfWeek(week);
+    alert(hours);
+    if(!rows)
+        alert("No se han seleccinado horas.");
+    else if(hours>=schedule){
+        if(!jQuery.isEmptyObject(rows)){
             $.ajax({
                 method:"POST",
-                url:"../timetable-hour/delete-hour",
-                data:{
-                    id_timetable:id_timetable
-                },
+                url:"../timetable/release-timetable",
                 dataType:"json",
+                data:{
+                    rows_local:$.toJSON(rows.local),
+                    rows_db:$.toJSON(rows.db),
+                    beginning:date.beginning
+                    },
                 success:function(response){
                     if(response.ok){
-                        $("#overlay_task").overlay().close();
-                        alert("Se ha eliminado la actividad");
-                        $("#calendar").fullCalendar('removeEvents',id);
+                        alert("La planilla ha sido liberada");
+                        $("#rowed5").trigger("reloadGrid");
                     }else if(response.error)
                         alert(response.error);
                 }
             });
-    }
-    $("#rowed5").jqGrid("resetSelection");
-    sumHours();
+        }else
+            alert("Existen errores en las horas seleccionadas.");
+    }else
+        alert("La horas a liberar son menores a las horas de la semana.");
+}
+
+function deleteRows(rows_local){
+    rows=make_json_request();
+    date=getDateRangeOfWeek(week);
+    if(!rows)
+        alert("No se han seleccinado horas.");
+    else if(!jQuery.isEmptyObject(rows.db)){
+        $.ajax({
+            method:"POST",
+            url:"../timetable/delete-timetable",
+            data:{
+                rows_db:$.toJSON(rows.db)
+            },
+            dataType:"json",
+            success:function(response){
+                if(response.ok){
+                    for(var i=0; i<rows_local.length; i++){
+                        index=parseInt(rows_local[i]);
+                        //var data=$("#rowed5").getRowData (index);
+                        $("#rowed5").jqGrid("delRowData",index);
+                    }
+                    $("#rowed5").jqGrid("resetSelection");
+                    alert("Las horas elegidas han sido borradas");
+                    //$("#rowed5").trigger("reloadGrid");
+                }else if(response.error)
+                    alert(response.error);
+            }
+        });
+    }else
+        alert("Existen errores en las horas seleccionadas.");
+}
+function duplicateRows(rows){
+     for(var i=0; i<rows.length; i++){
+         index=parseInt(rows[i]);
+         var data=$("#rowed5").getRowData (index);
+         if(data.id_project && data.id_project_task){
+            data.id_timeable="";
+            data.status="Borrador";
+            ids=$("#rowed5").jqGrid('getDataIDs');
+            index=parseInt(ids[$("#rowed5").jqGrid('getDataIDs').length-1])+parseInt(1);
+            $("#rowed5").jqGrid("addRowData",index,data);
+         }
+     }
 }
 
 function countHours(){
@@ -884,26 +719,62 @@ function countHours(){
 }
 
 function alternSave(rowid, result){
+    if(!result){
+        id_project_task="";
+    }else
+        $("#rowed5").jqGrid("setRowData", rowid,{id_project_task:id_project_task});
     sumHours();
 }
 
-function make_json_request(){
+function restoreAll(){
+    if(edit_mode(lastsel2)){
+        id_project_task=$("#"+lastsel2+"_task_code option:selected").attr("id");
+        //alert(id_project_task);
+        $("#rowed5").jqGrid('saveRow', lastsel2, false, 'clientArray');
+        $('#rowed5').jqGrid('restoreRow',lastsel2);
+        $("#rowed5").jqGrid("setRowData", lastsel2,{
+            id_project_task:id_project_task
+        });
+        sumHours();
+    }
+}
+
+function buildProjects(id,data){    
+    $("#"+id+"_project_code").html("");
+    $("#"+id+"_project_code").html($("#projects").html());
+    $("#"+id+"_project_code").bind("change",{},function(event, task){
+        get_tasks($(this).find("option:selected").attr("id"),id,task);
+    });
+    if(data.project_code){
+        $("#"+id+"_project_code").val(data.project_code);
+        $("#"+id+"_project_code").trigger("change",[data.task_code]);
+    }
+}
+
+function make_json_request(count){
     var json_o={};
+    var json_db={};
     var i=0;
+    hours=0;
     var ids=$("#rowed5").jqGrid('getGridParam','selarrrow');
     if(ids.length){
         for(i=0;i<ids.length;i++){
             data=$("#rowed5").getRowData (ids[i]);
+            //alert(JSON.stringify(data));
             if(data.hours && data.hours>0 && data.status=="Borrador"){
-                //alert($("#projects").find(":option[value='"+data.project_code+"']").attr("id"));
+                if(count)
+                    hours+=parseInt(data.hours);
                 data.id_project=$("#projects option[value='"+data.project_code+"']").attr("id");
-                json_o[i]=data;
-            }
+                if(!data.id_timetable)
+                    json_o[i]=data;
+                else
+                    json_db[i]=data;
+            }else
+                return {}
         }
-        return json_o;
+        return {local:json_o,db:json_db};
     }
     else{
-        alert("No se han seleccionado horas para liberar.");
         return null;
     }
 }
@@ -962,4 +833,10 @@ function sumHours(){
         }
     }
     $("#rowed5").jqGrid("footerData","set",{"monday":days.monday,"tuesday":days.tuesday,"wednesday":days.wednesday,"thursday":days.thursday,"friday":days.friday,"saturday":days.friday,"sunday":days.sunday,"hours":days.hours});
+}
+
+function keydown(){
+    $("input[id*='_']").bind("keydown",function(){
+       id_project_task=$("select[id*='_task_code'] option:selected").attr("id");
+    });
 }

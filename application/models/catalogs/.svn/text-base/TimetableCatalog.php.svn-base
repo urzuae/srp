@@ -19,6 +19,7 @@ require_once "application/models/beans/Timetable.php";
 require_once "application/models/exceptions/TimetableException.php";
 require_once "application/models/collections/TimetableCollection.php";
 require_once "application/models/factories/TimetableFactory.php";
+require_once "application/models/catalogs/TimetableLogCatalog.php";
 
 /**
  * Singleton TimetableCatalog Class
@@ -75,11 +76,14 @@ class TimetableCatalog extends Catalog
         {
             $data = array(
                 'id_employee' => $timetable->getIdEmployee(),
-                'date' => $timetable->getDate(),
+                'id_project' => $timetable->getIdProject(),
+                'id_project_task' => $timetable->getIdProjectTask(),
                 'id_approver_1' => $timetable->getIdApprover1(),
                 'id_approver_2' => $timetable->getIdApprover2(),
                 'id_current_approver' => $timetable->getIdCurrentApprover(),
+                'description' => $timetable->getDescription(),
                 'attendance_type' => $timetable->getAttendanceType(),
+                'date' => $timetable->getDate(),
                 'status' => $timetable->getStatus(),
             );
             $data = array_filter($data, 'Catalog::notNull');
@@ -149,11 +153,14 @@ class TimetableCatalog extends Catalog
             $where[] = "id_timetable = '{$timetable->getIdTimetable()}'";
             $data = array(
                 'id_employee' => $timetable->getIdEmployee(),
-                'date' => $timetable->getDate(),
+                'id_project' => $timetable->getIdProject(),
+                'id_project_task' => $timetable->getIdProjectTask(),
                 'id_approver_1' => $timetable->getIdApprover1(),
                 'id_approver_2' => $timetable->getIdApprover2(),
                 'id_current_approver' => $timetable->getIdCurrentApprover(),
+                'description' => $timetable->getDescription(),
                 'attendance_type' => $timetable->getAttendanceType(),
+                'date' => $timetable->getDate(),
                 'status' => $timetable->getStatus(),
             );
             $data = array_filter($data, 'Catalog::notNull');
@@ -342,6 +349,32 @@ class TimetableCatalog extends Catalog
     }
 
     /**
+     * Obtiene un TimetableCollection  dependiendo del idProject
+     * @param int $idProject
+     * @return TimetableCollection
+     */
+    public function getByIdProject($idProject)
+    {
+        $criteria = new Criteria();
+        $criteria->add(Timetable::ID_PROJECT, $idProject, Criteria::EQUAL);
+        $timetableCollection = $this->getByCriteria($criteria);
+        return $timetableCollection;
+    }
+
+    /**
+     * Obtiene un TimetableCollection  dependiendo del idProjectTask
+     * @param int $idProjectTask
+     * @return TimetableCollection
+     */
+    public function getByIdProjectTask($idProjectTask)
+    {
+        $criteria = new Criteria();
+        $criteria->add(Timetable::ID_PROJECT_TASK, $idProjectTask, Criteria::EQUAL);
+        $timetableCollection = $this->getByCriteria($criteria);
+        return $timetableCollection;
+    }
+
+    /**
      * Obtiene un TimetableCollection  dependiendo del idApprover1
      * @param int $idApprover1
      * @return TimetableCollection
@@ -389,7 +422,8 @@ class TimetableCatalog extends Catalog
     public function getActives(Criteria $criteria = null)
     {
         $criteria = (null === $criteria) ? new Criteria() : $criteria;
-        $criteria->add(Timetable::STATUS, Timetable::$Status['Active'], Criteria::EQUAL);
+        // $criteria->add(Timetable::STATUS, Timetable::$Status['Active'], Criteria::EQUAL);
+        $criteria->add(Timetable::STATUS, Timetable::$Status['approved'], Criteria::EQUAL);
         return $this->getByCriteria($criteria);
     }
 
@@ -435,17 +469,24 @@ class TimetableCatalog extends Catalog
             $this->save($timetable);
         }
     }
-
-	/*
-	 * 
-	 */
-	public function getTimeTablesByDate($startDate,$endDate)
+    
+	public function getIdProjectByIdEmployee($idEmployee) {
+        try {
+            $sql = "SELECT DISTINCT id_project FROM " . Timetable::TABLENAME . "
+                   WHERE  id_current_approver = " . $idEmployee;
+            $result = $this->db->fetchAll($sql);
+        } catch (Exception $e) {
+            throw new ProjectException("Can't obtain relations by criteria\n" . $e->getMessage());
+        }
+        return $result;
+    }
+    
+    public function getTimeTablesByDate($startDate,$endDate)
     {
     	try 
         {
-            $sql = "SELECT id_timetable, id_employee, date, id_current_approver FROM ".Timetable::TABLENAME."
-                    WHERE status = 4
-                    AND date BETWEEN '".$startDate." 00:00:00' AND '".$endDate." 23:59:59'";
+            $sql = "SELECT id_timetable, id_employee, id_project, id_project_task, description, attendance_type, date, id_current_approver, status FROM ".Timetable::TABLENAME."
+                    WHERE date BETWEEN '".$startDate." 00:00:00' AND '".$endDate." 23:59:59'";
             $result = $this->db->fetchAll($sql);
         } catch (Exception $e) {
             throw new TimetableException("Can't obtain timetables\n" . $e->getMessage());
@@ -456,13 +497,38 @@ class TimetableCatalog extends Catalog
 	/*
 	 * 
 	 */
-	public function getTimeTablesGeneralByDate($startDate,$endDate)
+	public function getTimeTablesGeneralByDate($idEmployee, $startDate)
     {
     	try 
         {
-            $sql = "SELECT id_timetable, id_employee, date, id_current_approver FROM ".Timetable::TABLENAME."
-                    WHERE date BETWEEN '".$startDate." 00:00:00' AND '".$endDate." 23:59:59'";
+            $sql = "SELECT id_timetable, id_employee, id_project, id_project_task, description, attendance_type, date, id_current_approver 
+            		FROM ".Timetable::TABLENAME."
+                    WHERE id_current_approver = ".$idEmployee."
+                    AND date='$startDate' 
+                    AND (status =".Timetable::$Status["released"]." OR status=".Timetable::$Status["process"].")";
+            //die($sql);
             $result = $this->db->fetchAll($sql);
+        } catch (Exception $e) {
+            throw new TimetableException("Can't obtain timetables\n" . $e->getMessage());
+        }
+        return $result;
+    }
+    
+    /*
+     * 
+     */
+    public function getDateRejectByIdTimetable($idTimetable)
+    {
+    	try 
+        {
+            $sql = "SELECT b.timestamp
+            		FROM pcs_srp_core_timetables_logs AS b,
+            		pcs_srp_core_timetables_logs_statuses AS c
+                    WHERE b.id_timetable = ".$idTimetable." 
+                    AND b.id_timetable_log = c.id_timetable_log
+                    AND c.status = 3";
+            list($timestamp) = $this->db->fetchCol($sql);
+            $result = $timestamp;
         } catch (Exception $e) {
             throw new TimetableException("Can't obtain timetables\n" . $e->getMessage());
         }
@@ -477,10 +543,9 @@ class TimetableCatalog extends Catalog
     	try 
         {
             $sql = "SELECT b.timestamp
-            		FROM pcs_srp_core_timetables AS a, 
-            		pcs_srp_core_timetables_logs AS b,
+            		FROM pcs_srp_core_timetables_logs AS b,
             		pcs_srp_core_timetables_logs_statuses AS c
-                    WHERE a.id_timetable = b.id_timetable 
+                    WHERE b.id_timetable = ".$idTimetable." 
                     AND b.id_timetable_log = c.id_timetable_log
                     AND c.status = 4";
             list($timestamp) = $this->db->fetchCol($sql);
@@ -499,10 +564,9 @@ class TimetableCatalog extends Catalog
     	try 
         {
             $sql = "SELECT b.timestamp
-            		FROM pcs_srp_core_timetables AS a, 
-            		pcs_srp_core_timetables_logs AS b,
+            		FROM pcs_srp_core_timetables_logs AS b,
             		pcs_srp_core_timetables_logs_statuses AS c
-                    WHERE a.id_timetable = b.id_timetable 
+                    WHERE b.id_timetable = ".$idTimetable." 
                     AND b.id_timetable_log = c.id_timetable_log
                     AND c.status = 2";
             list($timestamp) = $this->db->fetchCol($sql);
@@ -511,5 +575,73 @@ class TimetableCatalog extends Catalog
             throw new TimetableException("Can't obtain timetables\n" . $e->getMessage());
         }
         return $result;
+    }
+    
+	public function getDisctinctDateByIdProjects($idProjects, $idEmployee)
+    {
+        try 
+        {
+            $sql = "SELECT DISTINCT DATE_FORMAT( b.record_date, '%Y-%m-%d' ) as date, b.id_timetable, a.status 
+            		FROM ".Timetable::TABLENAME." AS a, 
+            		pcs_srp_core_timetables_hours AS b 
+                    WHERE a.id_employee = ".$idEmployee." 
+                    AND a.id_timetable = b.id_timetable
+                    AND a.id_project IN (".$idProjects.") ORDER BY date";
+            $result = $this->db->fetchAll($sql);
+        } catch (Exception $e) {
+            throw new TimetableException("Can't obtain dates\n" . $e->getMessage());
+        }
+        return $result;
+    }    
+    
+    public function getTypeHome($idTimetable)
+    {
+    	try 
+        {
+            $sql = "SELECT c.type
+            		FROM pcs_srp_core_timetables_logs AS b,
+            		pcs_srp_core_timetables_logs_approvers AS c
+                    WHERE b.id_timetable = ".$idTimetable." 
+                    AND b.id_timetable_log = c.id_timetable_log";
+            list($type) = $this->db->fetchCol($sql);
+            $result = $type;
+        } catch (Exception $e) {
+            throw new TimetableException("Can't obtain types timetables logs approvers\n" . $e->getMessage());
+        }
+        return $result;
+    }
+    
+    
+    public function getTimetablesBetweenDate($starting,$ending){
+    	$criteria=new Criteria();
+    	$criteria->add(Timetable::DATE,array($starting,$ending),Criteria::BETWEEN);
+    	$status[]=Timetable::$Status['released'];
+    	$status[]=Timetable::$Status['rejected'];
+    	$status[]=Timetable::$Status['approved'];
+    	$status[]=Timetable::$Status['not_registered'];
+    	$status[]=Timetable::$Status['process'];
+		$criteria->add(Timetable::STATUS,$status,Criteria::IN);
+		
+    	return $this->getByCriteria($criteria);
+    }
+    
+    public function getTimetablesBetweenHours($starting,$ending,$date=null){
+    	$criteria=new Criteria();
+    	$criteria->add(Timetable::DATE,date("Y-m-d"),Criteria::EQUAL);
+    	$status[]=Timetable::$Status['released'];
+    	$status[]=Timetable::$Status['rejected'];
+    	$status[]=Timetable::$Status['approved'];
+    	$status[]=Timetable::$Status['not_registered'];
+    	$status[]=Timetable::$Status['process'];
+		$criteria->add(Timetable::STATUS,$status,Criteria::IN);
+		
+    	if(is_null($date))
+    		$date=date("Y-m-d");
+    		
+    	$criteria_hours=new Criteria();
+    	$criteria_hours->add(TimetableLog::TIMESTAMP,array($date.' '.$starting,$date.' '.$ending),Criteria::BETWEEN);
+    	
+    	$criteria->add(Timetable::ID_TIMETABLE,TimetableLogCatalog::getInstance()->getCustomFieldByCriteria(TimetableLog::ID_TIMETABLE,$criteria_hours,true),Criteria::IN);
+    	return $this->getByCriteria($criteria);
     }
 } 

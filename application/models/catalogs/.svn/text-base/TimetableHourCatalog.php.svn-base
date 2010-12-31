@@ -16,10 +16,10 @@
  */
 require_once "lib/db/Catalog.php";
 require_once "application/models/beans/TimetableHour.php";
+require_once "application/models/beans/ProjectTask.php";
 require_once "application/models/exceptions/TimetableHourException.php";
 require_once "application/models/collections/TimetableHourCollection.php";
 require_once "application/models/factories/TimetableHourFactory.php";
-require_once "application/models/beans/ProjectTask.php";
 
 /**
  * Singleton TimetableHourCatalog Class
@@ -76,15 +76,10 @@ class TimetableHourCatalog extends Catalog
         {
             $data = array(
                 'id_timetable' => $timetableHour->getIdTimetable(),
-                'id_project_task' => $timetableHour->getIdProjectTask(),
-                'id_project' => $timetableHour->getIdProject(),
                 'record_date' => $timetableHour->getRecordDate(),
-                'description' => $timetableHour->getDescription(),
                 'hours' => $timetableHour->getHours(),
                 'date_created' => $timetableHour->getDateCreated(),
                 'timestamp' => $timetableHour->getTimestamp(),
-                'status' => $timetableHour->getStatus(),
-                'type' => $timetableHour->getType(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->insert(TimetableHour::TABLENAME, $data);
@@ -153,15 +148,10 @@ class TimetableHourCatalog extends Catalog
             $where[] = "id_timetable_hour = '{$timetableHour->getIdTimetableHour()}'";
             $data = array(
                 'id_timetable' => $timetableHour->getIdTimetable(),
-                'id_project_task' => $timetableHour->getIdProjectTask(),
-                'id_project' => $timetableHour->getIdProject(),
                 'record_date' => $timetableHour->getRecordDate(),
-                'description' => $timetableHour->getDescription(),
                 'hours' => $timetableHour->getHours(),
                 'date_created' => $timetableHour->getDateCreated(),
                 'timestamp' => $timetableHour->getTimestamp(),
-                'status' => $timetableHour->getStatus(),
-                'type' => $timetableHour->getType(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->update(TimetableHour::TABLENAME, $data, $where);
@@ -206,7 +196,7 @@ class TimetableHourCatalog extends Catalog
         try
         {
             $where = array($this->db->quoteInto('id_timetable_hour = ?', $idTimetableHour));
-            return $this->db->delete(TimetableHour::TABLENAME, $where);
+            $this->db->delete(TimetableHour::TABLENAME, $where);
         }
         catch(Exception $e)
         {
@@ -348,88 +338,6 @@ class TimetableHourCatalog extends Catalog
         return $timetableHourCollection;
     }
 
-    /**
-     * Obtiene un TimetableHourCollection  dependiendo del idProjectTask
-     * @param int $idProjectTask
-     * @return TimetableHourCollection
-     */
-    public function getByIdProjectTask($idProjectTask)
-    {
-        $criteria = new Criteria();
-        $criteria->add(TimetableHour::ID_PROJECT_TASK, $idProjectTask, Criteria::EQUAL);
-        $timetableHourCollection = $this->getByCriteria($criteria);
-        return $timetableHourCollection;
-    }
-
-    /**
-     * Obtiene un TimetableHourCollection  dependiendo del idProject
-     * @param int $idProject
-     * @return TimetableHourCollection
-     */
-    public function getByIdProject($idProject)
-    {
-        $criteria = new Criteria();
-        $criteria->add(TimetableHour::ID_PROJECT, $idProject, Criteria::EQUAL);
-        $timetableHourCollection = $this->getByCriteria($criteria);
-        return $timetableHourCollection;
-    }
-
-    /**
-     * Metodo que regresa una coleccion de objetos TimetableHour con Status 'Active'
-     * dependiendo del criterio establecido
-     * @param Criteria $criteria
-     * @return TimetableHourCollection $timetableHourCollection
-     */
-    public function getActives(Criteria $criteria = null)
-    {
-        $criteria = (null === $criteria) ? new Criteria() : $criteria;
-        $criteria->add(TimetableHour::STATUS, TimetableHour::$Status['Active'], Criteria::EQUAL);
-        return $this->getByCriteria($criteria);
-    }
-
-    /**
-     * Metodo que regresa una coleccion de objetos TimetableHour con Status 'Inactive'
-     * dependiendo del criterio establecido
-     * @param Criteria $criteria
-     * @return TimetableHourCollection $timetableHourCollection
-     */
-    public function getInactives(Criteria $criteria = null)
-    {
-        $criteria = (null === $criteria) ? new Criteria() : $criteria;
-        $criteria->add(TimetableHour::STATUS, TimetableHour::$Status['Inactive'], Criteria::EQUAL);
-        return $this->getByCriteria($criteria);
-    }
-
-    /**
-     * Activate a timetableHour
-     * @param TimetableHour $timetableHour
-     */
-    public function activate($timetableHour)
-    {
-        if(!($timetableHour instanceof TimetableHour))
-            throw new TimetableHourException("passed parameter isn't a TimetableHour instance");
-        if(TimetableHour::$Status['Active'] != $timetableHour->getStatus())
-        {
-            $timetableHour->setStatus(TimetableHour::$Status['Active']);
-            $this->save($timetableHour);
-        }
-    }
-
-    /**
-     * Deactivate a timetableHour
-     * @param TimetableHour $timetableHour
-     */
-    public function deactivate($timetableHour)
-    {
-        if(!($timetableHour instanceof TimetableHour))
-            throw new TimetableHourException("passed parameter isn't a TimetableHour instance");
-        if(TimetableHour::$Status['Inactive'] != $timetableHour->getStatus())
-        {
-            $timetableHour->setStatus(TimetableHour::$Status['Inactive']);
-            $this->save($timetableHour);
-        }
-    }
-
     public function checkHours($idTimetable){
         $criteria=new Criteria();
         $criteria->add(TimetableHour::ID_TIMETABLE,$idTimetable,  Criteria::EQUAL);
@@ -455,10 +363,10 @@ class TimetableHourCatalog extends Catalog
 
     public function getHours($idEmployee,$beginningDateWeek){
         $select=$this->db->select();
-        $select->from(Timetable::TABLENAME,array(Timetable::DATE,  Timetable::STATUS, Timetable::ID_EMPLOYEE,  Timetable::ID_TIMETABLE, Timetable::ATTENDANCE_TYPE))
-                ->join(TimetableHour::TABLENAME, Timetable::ID_TIMETABLE."=".TimetableHour::ID_TIMETABLE, array(TimetableHour::ID_PROJECT_TASK,TimetableHour::ID_PROJECT,TimetableHour::RECORD_DATE,TimetableHour::DESCRIPTION,TimetableHour::HOURS, "day"=>"LOWER(DAYNAME(".TimetableHour::RECORD_DATE."))"))
-                ->join(Project::TABLENAME, TimetableHour::ID_PROJECT."=".Project::ID_PROJECT,"")
-                ->join(ProjectTask::TABLENAME, TimetableHour::ID_PROJECT_TASK."=".ProjectTask::ID_PROJECT_TASK,  ProjectTask::TASK_CODE)
+        $select->from(Timetable::TABLENAME,array(Timetable::DATE,  Timetable::STATUS, Timetable::ID_EMPLOYEE,  Timetable::ID_TIMETABLE, Timetable::ATTENDANCE_TYPE,Timetable::ID_PROJECT_TASK,Timetable::DESCRIPTION,Timetable::ID_PROJECT,))
+                ->join(TimetableHour::TABLENAME, Timetable::ID_TIMETABLE."=".TimetableHour::ID_TIMETABLE, array(TimetableHour::RECORD_DATE,TimetableHour::HOURS, "day"=>"LOWER(DAYNAME(".TimetableHour::RECORD_DATE."))"))
+                ->join(Project::TABLENAME, Timetable::ID_PROJECT."=".Project::ID_PROJECT,"")
+                ->join(ProjectTask::TABLENAME, Timetable::ID_PROJECT_TASK."=".ProjectTask::ID_PROJECT_TASK,  ProjectTask::TASK_CODE)
                 ->joinLeft(SpecificProject::TABLENAME, Project::ID_PROJECT."=".SpecificProject::ID_PROJECT, SpecificProject::PROJECT_CODE)
                 ->joinLeft(DepartmentProject::TABLENAME, Project::ID_PROJECT."=".DepartmentProject::ID_PROJECT,"")
                 ->joinLeft(Department::TABLENAME, DepartmentProject::ID_DEPARTMENT."=".Department::ID_DEPARTMENT, Department::DEPARTMENT_CODE)
@@ -475,55 +383,6 @@ class TimetableHourCatalog extends Catalog
                 ->group(TimetableHour::STATUS);
         //echo $select->__toString();
         return $this->db->fetchAll($select);
-    }
-
-	public function getDisctinctDateByIdProjects($idProjects)
-    {
-        try 
-        {
-            $sql = "SELECT DISTINCT DATE_FORMAT( date_created, '%Y-%m-%d' ) as date FROM ".TimetableHour::TABLENAME."
-                    WHERE id_project IN (".$idProjects.") ORDER BY date_created";
-            $result = $this->db->fetchAll($sql);
-        } catch (Exception $e) {
-            throw new TimetableHourException("Can't obtain dates\n" . $e->getMessage());
-        }
-        return $result;
-    }
-    
-	public function getStatusByDate($date)
-    {
-        try 
-        {
-            $sql = "SELECT status FROM ".TimetableHour::TABLENAME."
-                    WHERE date_created BETWEEN '".$date." 00:00:00' AND '".$date." 23:59:59' 
-                    AND status = 2";
-            if($this->db->fetchRow($sql) > 0)
-            	$status = 2;
-            else
-            {
-            	 $sql2 = "SELECT status FROM ".TimetableHour::TABLENAME."
-                    WHERE date_created BETWEEN '".$date." 00:00:00' AND '".$date." 23:59:59' 
-                    AND status = 3";
-	            if($this->db->fetchRow($sql2) > 0)
-	            	$status = 3;
-	            else
-	            {
-	            	 $sql3 = "SELECT status FROM ".TimetableHour::TABLENAME."
-	                    WHERE date_created BETWEEN '".$date." 00:00:00' AND '".$date." 23:59:59' 
-	                    AND status = 4";
-	            	 if($this->db->fetchRow($sql3) > 0)
-	            		$status = 4;
-		            else
-		            {
-		            	$status = 1;
-		            }
-	            }
-            }
-            $result = $status;
-        } catch (Exception $e) {
-            throw new TimetableHourException("Can't obtain dates\n" . $e->getMessage());
-        }
-        return $result;
     }
     
     /**     
@@ -556,7 +415,7 @@ class TimetableHourCatalog extends Catalog
     /*
      * 
      */
-    public function getIdProjectsByTimetable($idTimetable)
+   /* public function getIdProjectsByTimetable($idTimetable)
     {
     	try 
         {
@@ -567,12 +426,12 @@ class TimetableHourCatalog extends Catalog
             throw new TimetableHourException("Can't obtain idProjects\n" . $e->getMessage());
         }
         return $result;
-    }
+    }*/
     
     /*****
      * 
      *****/
-    public function getIdProjectTasksByIdProject($idProject, $idTimetable)
+   /* public function getIdProjectTasksByIdProject($idProject, $idTimetable)
     {
     	try 
         {
@@ -585,18 +444,17 @@ class TimetableHourCatalog extends Catalog
             throw new TimetableHourException("Can't obtain idProjectTasks\n" . $e->getMessage());
         }
         return $result;
-    }
+    }*/
     
     /*
      * 
      */
-    public function getSumHoursByIdProject($idProject, $idTimetable)
+    public function getSumHoursByIdProject($idTimetable)
     {
     	try 
         {
             $sql = "SELECT SUM(hours) as sum FROM ".TimetableHour::TABLENAME."
-                    WHERE id_project = ".$idProject." 
-                    AND id_timetable = ".$idTimetable;
+                    WHERE id_timetable = ".$idTimetable;
             list($sum) = $this->db->fetchCol($sql);
             $result = $sum;
         } catch (Exception $e) {
@@ -608,15 +466,12 @@ class TimetableHourCatalog extends Catalog
     /*****
      * 
      *****/
-    public function getSumHoursByIdProjectTask($idProjectTask, $idProject, $idTimetable)
+    public function getSumHoursByIdProjectTask($idTimetable)
     {
     	try 
         {
             $sql = "SELECT SUM(hours) as sum FROM ".TimetableHour::TABLENAME."
-                    WHERE status = 2
-                    AND id_project_task = ".$idProjectTask." 
-                    AND id_project = ".$idProject." 
-                    AND id_timetable = ".$idTimetable;
+                    WHERE id_timetable = ".$idTimetable;
             list($sum) = $this->db->fetchCol($sql);
             $result = $sum;
         } catch (Exception $e) {
@@ -628,15 +483,12 @@ class TimetableHourCatalog extends Catalog
 	/*****
      * 
      *****/
-    public function getDayHoursByIdProjectTask($idProjectTask, $idProject, $idTimetable)
+    public function getDayHoursByIdProjectTask($idTimetable)
     {
     	try 
         {
-            $sql = "SELECT date_created,hours FROM ".TimetableHour::TABLENAME."
-                    WHERE status = 2 
-                    AND id_project_task = ".$idProjectTask." 
-                    AND id_project = ".$idProject." 
-                    AND id_timetable = ".$idTimetable;
+            $sql = "SELECT record_date,hours FROM ".TimetableHour::TABLENAME."
+                    WHERE id_timetable = ".$idTimetable;
             $result = $this->db->fetchAll($sql);
         } catch (Exception $e) {
             throw new TimetableHourException("Can't obtain hours amount\n" . $e->getMessage().$sql);

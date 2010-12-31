@@ -79,6 +79,8 @@ class TimetableLogApproverCatalog extends TimetableLogCatalog
                 'id_timetable_log' => $timetableLogApprover->getIdTimetableLog(),
                 'id_current_approver' => $timetableLogApprover->getIdCurrentApprover(),
                 'id_former_approver' => $timetableLogApprover->getIdFormerApprover(),
+                'type' => $timetableLogApprover->getType(),
+                'type_approver' => $timetableLogApprover->getTypeApprover(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->insert(TimetableLogApprover::TABLENAME, $data);
@@ -149,6 +151,8 @@ class TimetableLogApproverCatalog extends TimetableLogCatalog
                 'id_timetable_log' => $timetableLogApprover->getIdTimetableLog(),
                 'id_current_approver' => $timetableLogApprover->getIdCurrentApprover(),
                 'id_former_approver' => $timetableLogApprover->getIdFormerApprover(),
+                'type' => $timetableLogApprover->getType(),
+                'type_approver' => $timetableLogApprover->getTypeApprover(),
             );
             $data = array_filter($data, 'Catalog::notNull');
             $this->db->update(TimetableLogApprover::TABLENAME, $data, $where);

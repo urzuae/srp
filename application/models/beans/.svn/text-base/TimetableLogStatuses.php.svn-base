@@ -40,6 +40,7 @@ class TimetableLogStatuses extends TimetableLog
     const ID_TIMETABLE_LOG_STATUS = "pcs_srp_core_timetables_logs_statuses.id_timetable_log_status";
     const ID_TIMETABLE_LOG = "pcs_srp_core_timetables_logs_statuses.id_timetable_log";
     const STATUS = "pcs_srp_core_timetables_logs_statuses.status";
+    const REJECTED_REASON = "pcs_srp_core_timetables_logs_statuses.rejected_reason";
     
 
     /**
@@ -68,6 +69,14 @@ class TimetableLogStatuses extends TimetableLog
      * @var int $status
      */
     private $status;
+    
+
+    /**
+     * $rejectedReason 
+     * 
+     * @var string $rejectedReason
+     */
+    private $rejectedReason;
 
     /**
      * Set the idTimetableLogStatus value
@@ -141,6 +150,28 @@ class TimetableLogStatuses extends TimetableLog
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set the rejectedReason value
+     * 
+     * @param string rejectedReason
+     * @return TimetableLogStatuses $timetableLogStatuses
+     */
+    public function setRejectedReason($rejectedReason)
+    {
+        $this->rejectedReason = $rejectedReason;
+        return $this;
+    }
+
+    /**
+     * Return the rejectedReason value
+     * 
+     * @return string
+     */
+    public function getRejectedReason()
+    {
+        return $this->rejectedReason;
     }
 
     /**

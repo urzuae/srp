@@ -39,7 +39,7 @@ class TimetableLogFactory
     */
    public static function create($idTimetable, $timestamp, $idEmployee, $type)
    {
-      //throw new Exception('Factory Deprecated');
+      throw new Exception('Factory Deprecated');
       $newTimetableLog = new TimetableLog();
       $newTimetableLog
           ->setIdTimetable($idTimetable)

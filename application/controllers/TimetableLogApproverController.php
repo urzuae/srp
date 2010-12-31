@@ -73,6 +73,8 @@ class TimetableLogApproverController extends CrudController
             'id_timetable_log' => $timetableLogApprover->getIdTimetableLog(),
             'id_current_approver' => $timetableLogApprover->getIdCurrentApprover(),
             'id_former_approver' => $timetableLogApprover->getIdFormerApprover(),
+            'type' => $timetableLogApprover->getType(),
+            'type_approver' => $timetableLogApprover->getTypeApprover(),
         );
         $this->view->post = $post;
         $this->setTitle('Edit TimetableLogApprover');
@@ -87,7 +89,9 @@ class TimetableLogApproverController extends CrudController
         $idTimetableLog = utf8_decode($this->getRequest()->getParam('id_timetable_log'));
         $idCurrentApprover = utf8_decode($this->getRequest()->getParam('id_current_approver'));
         $idFormerApprover = utf8_decode($this->getRequest()->getParam('id_former_approver'));
-        $timetableLogApprover = TimetableLogApproverFactory::create($idTimetableLog, $idCurrentApprover, $idFormerApprover);
+        $type = utf8_decode($this->getRequest()->getParam('type'));
+        $typeApprover = utf8_decode($this->getRequest()->getParam('type_approver'));
+        $timetableLogApprover = TimetableLogApproverFactory::create($idTimetableLog, $idCurrentApprover, $idFormerApprover, $type, $typeApprover);
         $timetableLogApproverCatalog->create($timetableLogApprover);  
         $this->view->setTpl('_row');
         $this->view->setLayoutFile(false);
@@ -105,6 +109,8 @@ class TimetableLogApproverController extends CrudController
         $timetableLogApprover->setIdTimetableLog($this->getRequest()->getParam('id_timetable_log'));
         $timetableLogApprover->setIdCurrentApprover($this->getRequest()->getParam('id_current_approver'));
         $timetableLogApprover->setIdFormerApprover($this->getRequest()->getParam('id_former_approver'));
+        $timetableLogApprover->setType($this->getRequest()->getParam('type'));
+        $timetableLogApprover->setTypeApprover($this->getRequest()->getParam('type_approver'));
         $timetableLogApproverCatalog->update($timetableLogApprover);
         $this->setFlash('ok','Successfully edited the TimetableLogApprover');
         $this->_redirect('timetable-log-approver/list');

@@ -52,80 +52,7 @@ class CalendarDayManager {
         }
         return self::$instance;
     }
-
-    /*public function getEnebaleDisableDays($idEmployee) {
-        $criteria = new Criteria();
-        $criteria1 = new Criteria();
-        $criteria2 = new Criteria();
-        if ($idEmployee == 0)
-            $criteria->add(CalendarDay::ID_EMPLOYEE, 'NULL', Criteria::IS_NULL);
-        else
-            $criteria1->add(CalendarDay::ID_EMPLOYEE, $idEmployee, Criteria::EQUAL);
-        $criteria2->add(CalendarDay::ID_EMPLOYEE, 'NULL', Criteria::IS_NULL);
-        $criteria->addOr($criteria1, $criteria2);
-        $calendarDay = $this->calendarDayCatalog->getDayDateByCriteria($criteria);
-        asort($calendarDay);
-        foreach ($calendarDay as $key => $CalendarDate) {
-            $date = explode('-', $CalendarDate);
-            $year = $date[0];
-            $month = $date[1];
-            $month = (string) (int) $month;
-            $day = $date[2];
-            $day = (string) (int) $day;
-
-            if ($month == '1') {
-                $dayArray1[] = $day;
-                $monthArray[$month] = $dayArray1;
-                //$monthArray = $monthArray1;
-            }
-            if ($month == '2') {
-                $dayArray2[] = $day;
-                $monthArray[$month] = $dayArray2;
-            }
-            if ($month == '3') {
-                $dayArray3[] = $day;
-                $monthArray[$month] = $dayArray3;
-            }
-            if ($month == '4') {
-                $dayArray4[] = $day;
-                $monthArray[$month] = $dayArray4;
-            }
-            if ($month == '5') {
-                $dayArray5[] = $day;
-                $monthArray5[$month] = $dayArray5;
-            }
-            if ($month == '6') {
-                $dayArray6[] = $day;
-                $monthArray[$month] = $dayArray6;
-            }
-            if ($month == '7') {
-                $dayArray7[] = $day;
-                $monthArray[$month] = $dayArray7;
-            }
-            if ($month == '8') {
-                $dayArray8[] = $day;
-                $monthArray[$month] = $dayArray8;
-            }
-            if ($month == '9') {
-                $dayArray9[] = $day;
-                $monthArray[$month] = $dayArray9;
-                //$monthArray = $monthArray9;
-            }
-            if ($month == '10') {
-                $dayArray10[] = $day;
-                $monthArray[$month] = $dayArray10;
-            }
-            if ($month == '11') {
-                $dayArray11[] = $day;
-                $monthArray[$month] = $dayArray11;
-            }
-            if ($month == '12') {
-                $dayArray12[] = $day;
-                $monthArray[$month] = $dayArray12;
-                //$monthArray = $monthArray12;
-            }
-        }
-    }*/
+    
     /*
      * Get EnableDays
      */
@@ -222,7 +149,6 @@ class CalendarDayManager {
         $dates_enables[$year] =$monthArray;
         return $dates_enables;
     }
-    
     /*
      * Get DisableDays
      */    
@@ -451,6 +377,33 @@ class CalendarDayManager {
         $result = strtotime("{$year}-{$month}-01");
         $result = strtotime('-1 second', strtotime('+1 month', $result));
         return date('d', $result);
+    }
+
+    function getDayStatus($projects, $idEmployee) {
+        foreach ($projects as $project) {
+            $tmp[] = $project['id_project'];
+        }
+        $stringProjects = implode(",", $tmp);
+        $strProjects = '"';
+        $strProjects.= implode(",", $tmp);
+        $strProjects.='"';
+        $dates = TimetableCatalog::getInstance()->getDisctinctDateByIdProjects($stringProjects, $idEmployee);
+        foreach ($dates as $date) {
+            if ($date['status'] == 2)
+                $dateArray2[] = $date['date'];
+            if ($date['status'] == 3)
+                $dateArray3[] = $date['date'];
+            if ($date['status'] == 4)
+                $dateArray4[] = $date['date'];
+            if ($date['status'] == 1)
+                $dateArray1[] = $date['date'];
+        }
+        $daysStatuses["daysStatuses2"] = CalendarDayManager::getInstance()->getCalendarDays($dateArray2);
+        $daysStatuses["daysStatuses3"] = CalendarDayManager::getInstance()->getCalendarDays($dateArray3);
+        $daysStatuses["daysStatuses4"] = CalendarDayManager::getInstance()->getCalendarDays($dateArray4);
+        $daysStatuses["daysStatuses1"] = CalendarDayManager::getInstance()->getCalendarDays($dateArray1);
+        $daysStatuses["strProjects"] = $strProjects;
+        return $daysStatuses;
     }
 
 }

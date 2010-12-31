@@ -126,9 +126,38 @@ class TimetableController extends CrudController
 
     public function saveTimetableAction(){
         $this->noRender();
-        $rows=json_decode($this->getRequest()->getParam("rows"),true);
-        //die(print_r($rows));
-        echo TimetableManager::getInstance()->createTimetable($rows, $this->getRequest()->getParam("beginning"), $this->getUser()->getBeanEmployee()->getIdEmployee());
+        $rows_local=json_decode($this->getRequest()->getParam("rows_local"),true);
+        $rows_db=json_decode($this->getRequest()->getParam("rows_db"),true);
+        die(json_encode (TimetableManager::getInstance()->createTimetable($this->getUser()->getBeanEmployee()->getIdEmployee(), $this->getRequest()->getParam("beginning"), Timetable::$Status["draft"], $rows_local,$rows_db)));
+    }
+
+    public function releaseTimetableAction(){
+        $this->noRender();
+        $rows_local=json_decode($this->getRequest()->getParam("rows_local"),true);
+        $rows_db=json_decode($this->getRequest()->getParam("rows_db"),true);
+        if(!empty($rows_local)){
+            $response=TimetableManager::getInstance()->createTimetable($this->getUser()->getBeanEmployee()->getIdEmployee(), $this->getRequest()->getParam("beginning"), Timetable::$Status["released"], $rows_local);
+            die(json_encode ($response));
+        } else
+            die (json_encode(TimetableManager::getInstance()->releaseTimetable($rows_db,$this->getUser()->getBeanEmployee()->getIdEmployee())));
+    }
+
+    public function deleteTimetableAction(){
+        $this->noRender();
+        $rows_db=json_decode($this->getRequest()->getParam("rows_db"),true);
+        die(json_encode (TimetableManager::getInstance()->deleteTimetable($rows_db)));
+    }
+
+    public function getEmployeesTimetablesAction(){
+        $this->noRender();
+        $idEmployee = $this->getUser()->getBeanEmployee()->getIdEmployee();
+        $date_digested = new Zend_Date($this->getRequest()->getParam('dayDate'), "dd/MM/YYYY");
+        echo TimetableManager::getInstance()->getEmployeesTimetables($idEmployee, $date_digested->toString("YYYY-MM-dd"), $date_digested->addDay(6)->toString("YYYY-MM-dd"));
+    }
+
+    public function approveTimetableAction(){
+        $this->noRender();
+        die (json_encode(TimetableManager::getInstance()->approveTimetable(json_decode($this->getRequest()->getParam("rows_db")),$this->getUser()->getBeanEmployee()->getIdEmployee())));
     }
 
 }

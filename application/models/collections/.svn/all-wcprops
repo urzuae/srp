@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 57
-/svn/srp/!svn/ver/60/trunk/application/models/collections
+/svn/srp/!svn/ver/71/trunk/application/models/collections
 END
 DepartmentProjectTaskCollection.php
 K 25
@@ -84,8 +84,8 @@ END
 TimetableHourCollection.php
 K 25
 svn:wc:ra_dav:version-url
-V 84
-/svn/srp/!svn/ver/5/trunk/application/models/collections/TimetableHourCollection.php
+V 85
+/svn/srp/!svn/ver/71/trunk/application/models/collections/TimetableHourCollection.php
 END
 SecurityActionCollection.php
 K 25

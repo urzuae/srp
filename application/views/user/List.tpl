@@ -1,9 +1,9 @@
 <form action="{url action=create}" method="post" class="validate ajaxForm">
 <table class="center">
-    <caption>{$i18n->_('User')}</caption>
+    <caption>{$l10n->_('User')}</caption>
     <tfoot>
         <tr>
-            <td colspan="2"><input type="submit" value="{$i18n->_('Save')}" /></td>
+            <td colspan="2"><input type="submit" value="{$l10n->_('Save')}" /></td>
         </tr>
     </tfoot>
     <tbody>
@@ -15,17 +15,17 @@
 
 
 <table class="center">
-    <caption>{$i18n->_('List')}</caption>
+    <caption>{$l10n->_('List')}</caption>
     <thead>
         <tr>
-            <td>{$i18n->_('IdUser')}</td>
-            <td>{$i18n->_('Username')}</td>
-            <td>{$i18n->_('Password')}</td>
-            <td>{$i18n->_('Status')}</td>
-            <td>{$i18n->_('IdAccessRole')}</td>
-            <td>{$i18n->_('IdPerson')}</td>
-            <td>{$i18n->_('System')}</td>
-            <td colspan="2">{$i18n->_('Actions')}</td>
+            <td>{$l10n->_('IdUser')}</td>
+            <td>{$l10n->_('Username')}</td>
+            <td>{$l10n->_('Password')}</td>
+            <td>{$l10n->_('Status')}</td>
+            <td>{$l10n->_('IdAccessRole')}</td>
+            <td>{$l10n->_('IdPerson')}</td>
+            <td>{$l10n->_('System')}</td>
+            <td colspan="2">{$l10n->_('Actions')}</td>
         </tr>
     </thead>
     <tbody id="ajaxList">
@@ -38,8 +38,8 @@
                 <td>{$user->getIdAccessRole()}</td>
                 <td>{$user->getIdPerson()}</td>
                 <td>{$user->getSystem()}</td>
-                <td><a href="{url action=edit idUser=$user->getIdUser()}">{icon src=pencil class=tip title=$i18n->_('Edit')}</a></td>
-                <td><a href="{url action=delete idUser=$user->getIdUser()}" class="confirm">{icon src=delete class=tip title=$i18n->_('Delete')}</a></td>
+                <td><a href="{url action=edit idUser=$user->getIdUser()}">{icon src=pencil class=tip title=$l10n->_('Edit')}</a></td>
+                <td><a href="{url action=delete idUser=$user->getIdUser()}" class="confirm">{icon src=delete class=tip title=$l10n->_('Delete')}</a></td>
             </tr>
         {/foreach}
     </tbody>

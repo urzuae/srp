@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 54
-/svn/srp/!svn/ver/65/trunk/application/models/catalogs
+/svn/srp/!svn/ver/98/trunk/application/models/catalogs
 END
 AccessLogCatalog.php
 K 25
@@ -90,8 +90,8 @@ END
 TimetableLogApproverCatalog.php
 K 25
 svn:wc:ra_dav:version-url
-V 85
-/svn/srp/!svn/ver/5/trunk/application/models/catalogs/TimetableLogApproverCatalog.php
+V 86
+/svn/srp/!svn/ver/94/trunk/application/models/catalogs/TimetableLogApproverCatalog.php
 END
 DepartmentProjectCatalog.php
 K 25
@@ -111,29 +111,29 @@ svn:wc:ra_dav:version-url
 V 84
 /svn/srp/!svn/ver/5/trunk/application/models/catalogs/SpecificProjectTaskCatalog.php
 END
+TimetableLogStatusesCatalog.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/srp/!svn/ver/94/trunk/application/models/catalogs/TimetableLogStatusesCatalog.php
+END
 TimetableHourCatalog.php
 K 25
 svn:wc:ra_dav:version-url
 V 79
-/svn/srp/!svn/ver/65/trunk/application/models/catalogs/TimetableHourCatalog.php
+/svn/srp/!svn/ver/97/trunk/application/models/catalogs/TimetableHourCatalog.php
 END
-TimetableLogStatusesCatalog.php
+TimetableCatalog.php
 K 25
 svn:wc:ra_dav:version-url
-V 85
-/svn/srp/!svn/ver/5/trunk/application/models/catalogs/TimetableLogStatusesCatalog.php
+V 75
+/svn/srp/!svn/ver/98/trunk/application/models/catalogs/TimetableCatalog.php
 END
 ProjectCatalog.php
 K 25
 svn:wc:ra_dav:version-url
 V 73
 /svn/srp/!svn/ver/50/trunk/application/models/catalogs/ProjectCatalog.php
-END
-TimetableCatalog.php
-K 25
-svn:wc:ra_dav:version-url
-V 75
-/svn/srp/!svn/ver/65/trunk/application/models/catalogs/TimetableCatalog.php
 END
 CalendarDayCatalog.php
 K 25

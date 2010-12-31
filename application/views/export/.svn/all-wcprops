@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 51
-/svn/srp/!svn/ver/51/trunk/application/views/export
+/svn/srp/!svn/ver/79/trunk/application/views/export
 END
 Export.tpl
 K 25
@@ -13,5 +13,5 @@ Find.tpl
 K 25
 svn:wc:ra_dav:version-url
 V 60
-/svn/srp/!svn/ver/51/trunk/application/views/export/Find.tpl
+/svn/srp/!svn/ver/79/trunk/application/views/export/Find.tpl
 END

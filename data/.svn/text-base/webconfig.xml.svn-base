@@ -4,7 +4,7 @@
         <database>
             <adapter>Pdo_Mysql</adapter>
             <params>
-                <host>localhost</host>
+                <host>10.0.0.98</host>
                 <username>root</username>
                 <password>mysql_pwd!</password>
                 <dbname>srp</dbname>

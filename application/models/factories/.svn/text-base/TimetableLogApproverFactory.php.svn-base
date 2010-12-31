@@ -33,23 +33,25 @@ class TimetableLogApproverFactory
     * Create a new TimetableLogApprover instance
     * @param int $idCurrentApprover
     * @param int $idFormerApprover
+    * @param int $type
+    * @param int $typeApprover
     * @param int $idTimetable
     * @param string $timestamp
     * @param int $idEmployee
-    * @param int $type
     * @return TimetableLogApprover
     */
-   public static function create($idCurrentApprover, $idFormerApprover, $idTimetable, $timestamp, $idEmployee, $type)
+   public static function create($idCurrentApprover, $idFormerApprover, $type, $typeApprover, $idTimetable, $timestamp, $idEmployee)
    {
       throw new Exception('Factory Deprecated');
       $newTimetableLogApprover = new TimetableLogApprover();
       $newTimetableLogApprover
           ->setIdCurrentApprover($idCurrentApprover)
           ->setIdFormerApprover($idFormerApprover)
+          ->setType($type)
+          ->setTypeApprover($typeApprover)
           ->setIdTimetable($idTimetable)
           ->setTimestamp($timestamp)
           ->setIdEmployee($idEmployee)
-          ->setType($type)
       ;
       return $newTimetableLogApprover;
    }
@@ -66,10 +68,11 @@ class TimetableLogApproverFactory
         $newTimetableLogApprover->setIdTimetableLog($fields['id_timetable_log']);
         $newTimetableLogApprover->setIdCurrentApprover($fields['id_current_approver']);
         $newTimetableLogApprover->setIdFormerApprover($fields['id_former_approver']);
+        $newTimetableLogApprover->setType($fields['type']);
+        $newTimetableLogApprover->setTypeApprover($fields['type_approver']);
         $newTimetableLogApprover->setIdTimetable($fields['id_timetable']);
         $newTimetableLogApprover->setTimestamp($fields['timestamp']);
         $newTimetableLogApprover->setIdEmployee($fields['id_employee']);
-        $newTimetableLogApprover->setType($fields['type']);
         return $newTimetableLogApprover;
     }
    

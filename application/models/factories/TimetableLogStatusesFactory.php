@@ -32,18 +32,20 @@ class TimetableLogStatusesFactory
    /**
     * Create a new TimetableLogStatuses instance
     * @param int $status
+    * @param string $rejectedReason
     * @param int $idTimetable
     * @param string $timestamp
     * @param int $idEmployee
     * @param int $type
     * @return TimetableLogStatuses
     */
-   public static function create($status, $idTimetable, $timestamp, $idEmployee, $type)
+   public static function create($status, $rejectedReason, $idTimetable, $timestamp, $idEmployee, $type)
    {
       throw new Exception('Factory Deprecated');
       $newTimetableLogStatuses = new TimetableLogStatuses();
       $newTimetableLogStatuses
           ->setStatus($status)
+          ->setRejectedReason($rejectedReason)
           ->setIdTimetable($idTimetable)
           ->setTimestamp($timestamp)
           ->setIdEmployee($idEmployee)
@@ -63,6 +65,7 @@ class TimetableLogStatusesFactory
         $newTimetableLogStatuses->setIdTimetableLogStatus($fields['id_timetable_log_status']);
         $newTimetableLogStatuses->setIdTimetableLog($fields['id_timetable_log']);
         $newTimetableLogStatuses->setStatus($fields['status']);
+        $newTimetableLogStatuses->setRejectedReason($fields['rejected_reason']);
         $newTimetableLogStatuses->setIdTimetable($fields['id_timetable']);
         $newTimetableLogStatuses->setTimestamp($fields['timestamp']);
         $newTimetableLogStatuses->setIdEmployee($fields['id_employee']);

@@ -1,5 +1,11 @@
 K 25
 svn:wc:ra_dav:version-url
 V 63
-/svn/srp/!svn/ver/23/trunk/public/js/modules/department-project
+/svn/srp/!svn/ver/72/trunk/public/js/modules/department-project
+END
+approved.js
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/srp/!svn/ver/72/trunk/public/js/modules/department-project/approved.js
 END

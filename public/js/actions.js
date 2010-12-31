@@ -113,7 +113,7 @@ ajaxGeneric = { errorCallback : function(e) { $('#contentPanel').prepend('<div c
 
 $(window).bind('resize', resizeWindow);
 
-function runDatePickers(){ $(".datePicker").datepicker({ changeFirstDay :false ,yearRange :'-80:+5', showAnim :'', dateFormat :'dd-mm-yy',mandatory:true,showMonthAfterYear:true}); }
+function runDatePickers(){ $(".datePicker").datepicker({ changeFirstDay :false ,yearRange :'-80:+5', showAnim :'', dateFormat :'yy-mm-dd',mandatory:true,showMonthAfterYear:true}); }
 
 automaticFill = (function() 
 {	

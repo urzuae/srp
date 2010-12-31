@@ -41,6 +41,8 @@ class TimetableLogApprover extends TimetableLog
     const ID_TIMETABLE_LOG = "pcs_srp_core_timetables_logs_approvers.id_timetable_log";
     const ID_CURRENT_APPROVER = "pcs_srp_core_timetables_logs_approvers.id_current_approver";
     const ID_FORMER_APPROVER = "pcs_srp_core_timetables_logs_approvers.id_former_approver";
+    const TYPE = "pcs_srp_core_timetables_logs_approvers.type";
+    const TYPE_APPROVER = "pcs_srp_core_timetables_logs_approvers.type_approver";
     
 
     /**
@@ -73,6 +75,22 @@ class TimetableLogApprover extends TimetableLog
      * @var int $idFormerApprover
      */
     private $idFormerApprover;
+    
+
+    /**
+     * $type 
+     * 1=>chain, 2=>staggered, 3=>transfer, 4=>returned
+     * @var int $type
+     */
+    private $type;
+    
+
+    /**
+     * $typeApprover 
+     * 
+     * @var int $typeApprover
+     */
+    private $typeApprover;
 
     /**
      * Set the idTimetableLogApprover value
@@ -160,6 +178,50 @@ class TimetableLogApprover extends TimetableLog
     public function getIdFormerApprover()
     {
         return $this->idFormerApprover;
+    }
+
+    /**
+     * Set the type value
+     * 1=>chain, 2=>staggered, 3=>transfer, 4=>returned
+     * @param int type
+     * @return TimetableLogApprover $timetableLogApprover
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Return the type value
+     * 1=>chain, 2=>staggered, 3=>transfer, 4=>returned
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set the typeApprover value
+     * 
+     * @param int typeApprover
+     * @return TimetableLogApprover $timetableLogApprover
+     */
+    public function setTypeApprover($typeApprover)
+    {
+        $this->typeApprover = $typeApprover;
+        return $this;
+    }
+
+    /**
+     * Return the typeApprover value
+     * 
+     * @return int
+     */
+    public function getTypeApprover()
+    {
+        return $this->typeApprover;
     }
 
 }

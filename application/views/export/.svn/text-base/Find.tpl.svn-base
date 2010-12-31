@@ -1,4 +1,4 @@
-<h2>Exportar Archivo Baan</h2>
+<h2>Monitoreo de Planillas</h2>
 <br><br>
 <form action="{url action=excel}" method="post" class="validate">
 	<table class="center"">
